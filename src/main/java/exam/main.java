@@ -29,6 +29,7 @@ class Main {
 		Area area = GameProgress.getCurrentArea();
 		while(true) {
 			System.out.println("io");
+			System.out.println("lol");
 			Scanner scanner = new Scanner(System.in);
 			Parser.parseCommand(scanner.nextLine().toUpperCase().trim());
 		}
