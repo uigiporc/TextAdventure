@@ -8,13 +8,18 @@ import map.*;
 public class GameProgress {
 	protected static int timeSpent;
 	protected static String sessionName;
-	private static Area currentArea;
+	private static Room currentArea;
+	private static final String language = "IT";
 	
 	public static void nextArea() {
 		currentArea = MapLoader.load();
 	}
 	
-	public static Area getCurrentArea() {
+	public static Room getCurrentArea() {
 		return currentArea;
+	}
+	
+	public static String getLang() {
+		return language;
 	}
 }

@@ -3,9 +3,9 @@ package map;
 //import java.util.HashMap;
 
 public class MapLoader {
-	 public static Area load() {
+	 public static Room load() {
 		 //Area area = new Area(0);
 		 
-		 return new Area();
+		 return new Room();
 	 }
 }

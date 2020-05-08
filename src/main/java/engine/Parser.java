@@ -4,8 +4,8 @@ import java.util.regex.Pattern;
 
 import items.Item;
 import items.Sword;
-import map.Area;
-import util.Commands;
+import map.Room;
+import util.Action;
 import java.util.regex.Matcher;
 
 //group(0) = tutta la stringa; group(1) = azione; group(4) = oggetto/direzione
@@ -22,11 +22,11 @@ public class Parser {
 				try {
 					
 					if(!matcher.group(1).isEmpty()) {
-						Commands action = Commands.toCommand(matcher.group(1));
+						Action action = Action.toCommand(matcher.group(1));
 						System.out.println("that's true bitch: " + action);
 						//switch on the command, if it's USA call the inventory, if it's
 						//OSSERVA call the areaItems etc.
-						Area area = new Area();
+						Room area = new Room();
 						Item item = area.getItemInArea(matcher.group(1));
 						System.out.println(item.getItemName());
 					}

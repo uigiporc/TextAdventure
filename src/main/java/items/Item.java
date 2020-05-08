@@ -1,18 +1,36 @@
 package items;
 
-public abstract class Item {
-	protected String itemName;
-	protected String description;
+import java.lang.Thread;
+
+import engine.GameProgress;
+
+public abstract class Item extends Thread{
+	protected String nameIT;
+	protected String nameEN;
+	protected String descriptionIT;
+	protected String descriptionEN;
 	protected boolean reusable;
 	
 	public String getItemName() {
-		return itemName;
+		if(GameProgress.getLang().equals("IT")) {
+			return nameIT;
+		}
+		else {
+			return nameEN;
+		}
 		
 	}
 	
 	public String getDescription() {
-		return description;
+		if(GameProgress.getLang().equals("IT")) {
+			return descriptionIT;
+		}
+		else {
+			return descriptionEN;
+		}
 	}
+	
+	public abstract void use();
 	
 }
 
@@ -21,5 +39,11 @@ public abstract class Item {
  *Chiave vecchia
  *Graffetta
  *Spada 
+ *Bomba
+ *Torcia
+ *Fiaccola
+ *Pala
+ *Acqua
+ *
  * 
 */

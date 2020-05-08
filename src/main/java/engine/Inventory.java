@@ -24,6 +24,10 @@ public class Inventory {
 		}
 		throw new ItemNotFoundException();
 	}
+	
+	public static void usedItem(Item usedItem) {
+		bag.remove(usedItem);
+	}
 }
 
 /*

@@ -1,6 +1,6 @@
 package util;
 
-public enum Commands {
+public enum Action {
     PRENDI,
     LANCIA,
     USA,
@@ -15,7 +15,7 @@ public enum Commands {
     CERCA;
 	
 	public static boolean equals(String s) throws IllegalActionException {
-		for(Commands temp : Commands.values()) {
+		for(Action temp : Action.values()) {
 			if(s.equals(temp.toString())) {
 				return true;
 			}
@@ -23,8 +23,8 @@ public enum Commands {
 		throw new IllegalActionException();
 	}
 	
-	public static Commands toCommand(String s) throws IllegalActionException {
-		for(Commands temp : Commands.values()) {
+	public static Action toCommand(String s) throws IllegalActionException {
+		for(Action temp : Action.values()) {
 			if(s.equals(temp.toString())) {
 				return temp;
 			}

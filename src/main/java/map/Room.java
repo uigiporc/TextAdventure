@@ -17,17 +17,17 @@ import java.util.HashMap;
 import java.util.Map;
 import items.*;
 
-public class Area {
+public class Room {
 	//private int ID; 
 	//private String areaName;
-	private String areaDescription;
+	private String roomDescription;
 	private LightStatus illumination;
-	private Map<String, Item> areaItems = new HashMap<String, Item>();
-	private Map<Directions, Area> adiacentAreas = new HashMap<Directions, Area>();
+	private Map<String, Item> roomItems = new HashMap<String, Item>();
+	private Map<Directions, Room> adiacentRooms = new HashMap<Directions, Room>();
 	private String help;
 	
 	public String getAreaDescription() {
-		return areaDescription;
+		return roomDescription;
 	}
 	
 	public LightStatus getIllumination() {
@@ -35,8 +35,8 @@ public class Area {
 	}
 	
 	public Item getItemInArea(String command) throws IllegalActionException{
-		if(areaItems.containsKey(command)) {
-			return areaItems.get(command);
+		if(roomItems.containsKey(command)) {
+			return roomItems.get(command);
 		}
 		else {
 			throw new IllegalActionException();
@@ -57,14 +57,14 @@ public class Area {
 	    
 	}
 	
-	public Area() {		//should be protected
+	public Room() {		//should be protected
 		
 		// Load from file the area with the given ID
-		 
+		/* 
 		illumination = LightStatus.ILLUMINATO;
-		areaDescription = "Questa è l'aria iniziale. Enjoy.";
-		areaItems.put("RACCOGLI", new Jar());
-		areaItems.put("S+", new Sword());
-		adiacentAreas.put(Directions.NORD, this);
+		roomDescription = "Questa è l'aria iniziale. Enjoy.";
+		roomItems.put("RACCOGLI", new Bottle());
+		roomItems.put("S+", new Sword());
+		adiacentRooms.put(Directions.NORD, this);*/
 	}
 }
