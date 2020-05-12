@@ -1,36 +1,33 @@
 package items;
 
+import java.io.Serializable;
 import java.lang.Thread;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import engine.GameProgress;
 
-public abstract class Item extends Thread{
-	protected String nameIT;
-	protected String nameEN;
-	protected String descriptionIT;
-	protected String descriptionEN;
-	protected boolean reusable;
+public abstract class Item extends Thread implements Serializable{
+	
+	protected static ResourceBundle nameBundle = ResourceBundle.getBundle("items.ItemNames", Locale.getDefault());
+	protected static ResourceBundle descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", Locale.getDefault());
+	protected static boolean reusable;
 	
 	public String getItemName() {
-		if(GameProgress.getLang().equals("IT")) {
-			return nameIT;
-		}
-		else {
-			return nameEN;
-		}
-		
+		nameBundle = ResourceBundle.getBundle("items.ItemNames", Locale.getDefault());
+		return nameBundle.getString(this.getClass().getSimpleName());
 	}
 	
 	public String getDescription() {
-		if(GameProgress.getLang().equals("IT")) {
-			return descriptionIT;
-		}
-		else {
-			return descriptionEN;
-		}
+		descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", Locale.getDefault());
+		return descriptionBundle.getString(this.getClass().getSimpleName());
 	}
 	
 	public abstract void use();
+	
+	public boolean equals(Item comparedItem) {
+		return this.getClass().equals(comparedItem.getClass()) ? true : false;
+	}
 	
 }
 

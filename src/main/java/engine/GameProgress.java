@@ -1,25 +1,49 @@
 package engine;
 
+import java.util.Locale;
+
 import map.*;
+import util.LightStatus;
 
 /**
  * GameProgress is a class containing the current game progress. 
  */
 public class GameProgress {
+
+	
 	protected static int timeSpent;
 	protected static String sessionName;
-	private static Room currentArea;
-	private static final String language = "IT";
+	private static Room currentRoom;
+	private static LightStatus playerLight = null;
+
 	
 	public static void nextArea() {
-		currentArea = MapLoader.load();
+		currentRoom = MapLoader.load();
 	}
 	
 	public static Room getCurrentArea() {
-		return currentArea;
+		return currentRoom;
 	}
 	
-	public static String getLang() {
-		return language;
+	/*public static Locale getLang() {
+		return currentLocale;
+	}*/
+	
+	public static boolean setLang(Locale changedLocale) {
+		try {
+			Locale.setDefault(changedLocale);
+			return true;
+			
+		} catch(SecurityException ex) {
+			return false;
+		}
+	}
+	
+	public static void setPlayerLight(LightStatus light) {
+		playerLight = light;
+	}
+	
+	public static void resetPlayerLight() {
+		playerLight = null;
 	}
 }

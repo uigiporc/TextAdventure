@@ -2,7 +2,7 @@
  * @author Luigi Porcelli, Computer Science 
  */
 
-package map;
+package adventure.builder;
 
 /*
  * Maps areaItems and adiacentAreas should have a specific behavior for when we need a specific 
@@ -13,13 +13,15 @@ package map;
  */
 
 import util.*;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import items.*;
 
-public class Room {
+public class Room implements Serializable{
+
 	private int ID; 
-	private RoomType setting;
 	private String roomDescription;
 	private LightStatus illumination;
 	private Map<String, Item> roomItems = new HashMap<String, Item>();
@@ -53,26 +55,16 @@ public class Room {
 		
 	}
 	
-	public void move(String direction) throws IllegalMovementException{
+	/*public void move(String direction) throws IllegalMovementException{
 	    
-	}
+	}*/
 	
-	protected void setLight(LightStatus light) {
-		illumination = light;
-	}
-	
-	protected RoomType getSetting() {
-		return setting;
-	}
-	
-	public Room() {		//should be protected
+	public Room(int identificator, LightStatus light, String roomDescr, Map items, Map rooms) {		//should be protected
 		
-		// Load from file the area with the given ID
-		/* 
-		illumination = LightStatus.ILLUMINATO;
-		roomDescription = "Questa è l'aria iniziale. Enjoy.";
-		roomItems.put("RACCOGLI", new Bottle());
-		roomItems.put("S+", new Sword());
-		adiacentRooms.put(Directions.NORD, this);*/
+		ID = identificator;
+		illumination = light;
+		roomDescription = roomDescr;
+		roomItems.putAll(items);
+		adiacentRooms.putAll(rooms);
 	}
 }
