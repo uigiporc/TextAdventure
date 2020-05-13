@@ -27,6 +27,10 @@ public enum Command {
 	private static Map<String[], Command> aliases;
 	private static ObjectInputStream commandAliasesStream = null;
 	
+	static {
+		Command.load();
+	}
+	
 	/*public static boolean equals(String s) throws IllegalActionException {
 		for(Command temp : Command.values()) {
 			if(s.equals(temp.toString())) {
@@ -45,6 +49,18 @@ public enum Command {
 			}
 		}
 		return false;
+	}
+	
+	public static Command getCommand(String stringToCheck) {
+		for(String[] commandAlias : aliases.keySet()) {
+			for(String checkingString : commandAlias) {
+				if(stringToCheck.equalsIgnoreCase(checkingString)) {
+					Command command = aliases.get(commandAlias);
+					return command;
+				}
+			}
+		}
+		return null;
 	}
 	
 	public static void load() {

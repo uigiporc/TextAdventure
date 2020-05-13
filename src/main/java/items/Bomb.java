@@ -1,5 +1,7 @@
 package items;
 
+import engine.GameOver;
+
 public class Bomb extends Item {
 	
 	private Thread bombExplosion = new Thread(this);
@@ -24,6 +26,7 @@ public class Bomb extends Item {
 			System.out.println("Bomba innescata: 5 secondi all'esplosione");
 			Thread.sleep(5000);
 			System.out.println("BOOM");
+			new GameOver();
 		} catch (InterruptedException e) {
 			//This thread should never be interrupted. 
 		}

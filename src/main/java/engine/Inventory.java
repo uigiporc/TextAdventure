@@ -8,11 +8,11 @@ public class Inventory {
 	private static ArrayList<Item> bag = new ArrayList<Item>();
 	//private static short bagMaxItems;
 	
-	public static void add(Item addedItem) {
+	public static void addToBag(Item addedItem) {
 		bag.add(addedItem);
 	}
 
-	public static Item get(String item) throws ItemNotFoundException { 
+	public static Item getFromBag(String item) throws ItemNotFoundException { 
 		Iterator<Item> bagIterator = bag.iterator();
 
 		while (bagIterator.hasNext()) {
@@ -25,8 +25,13 @@ public class Inventory {
 		throw new ItemNotFoundException();
 	}
 	
-	public static void usedItem(Item usedItem) {
-		bag.remove(usedItem);
+	public static void useItem(String itemToUseName) {
+		bag.add(new Bomb());
+		for(Item itemChecked : bag) {
+			if(itemChecked.equals(itemToUseName)) {
+				itemChecked.use();
+			}
+		}
 	}
 }
 
