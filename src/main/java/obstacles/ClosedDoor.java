@@ -18,4 +18,19 @@ public class ClosedDoor extends Obstacle {
 		    throw new IllegalItemUsageException();
 		}
 	}
+
+	@Override
+	public boolean move() {
+		if(lock) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public static void helpObstacle() {
+		//Print a short string about unlocking this sht
+	}
+	
 }

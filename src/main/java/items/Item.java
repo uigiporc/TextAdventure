@@ -15,17 +15,15 @@ import engine.GameProgress;
 
 public abstract class Item extends Thread implements Serializable{
 	
-	transient protected static ResourceBundle nameBundle = ResourceBundle.getBundle("items.ItemNames", Locale.getDefault());
-	transient protected static ResourceBundle descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", Locale.getDefault());
+	transient protected static ResourceBundle nameBundle = null;
+	transient protected static ResourceBundle descriptionBundle = null;
 	transient protected static boolean reusable;
 	
 	public String getItemName() {
-		nameBundle = ResourceBundle.getBundle("items.ItemNames", Locale.getDefault());
 		return nameBundle.getString(this.getClass().getSimpleName());
 	}
 	
 	public String getDescription() {
-		descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", Locale.getDefault());
 		return descriptionBundle.getString(this.getClass().getSimpleName());
 	}
 	
@@ -69,6 +67,14 @@ public abstract class Item extends Thread implements Serializable{
 			//Item not found.
 			return false;
 		}
+	}
+	
+	public static void setNameBundle(Locale currentLocale) {
+		nameBundle = ResourceBundle.getBundle("items.ItemNames", currentLocale);
+	}
+	
+	public static void setDescriptionBundle(Locale currentLocale) {
+		descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", currentLocale);
 	}
 }
 

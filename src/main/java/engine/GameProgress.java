@@ -3,6 +3,7 @@ package engine;
 import java.util.Locale;
 
 import map.*;
+import util.Direction;
 import util.LightStatus;
 
 /**
@@ -17,11 +18,11 @@ public class GameProgress {
 	private static LightStatus playerLight = null;
 
 	
-	public static void nextArea() {
+	public static void nextRoom() {
 		currentRoom = MapLoader.load();
 	}
 	
-	public static Room getCurrentArea() {
+	public static Room getCurrentRoom() {
 		return currentRoom;
 	}
 	
@@ -45,5 +46,9 @@ public class GameProgress {
 	
 	public static void resetPlayerLight() {
 		playerLight = null;
+	}
+	
+	public static void moveRoom(Direction direction) {
+		
 	}
 }

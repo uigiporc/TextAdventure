@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.swing.Action;
 
+import engine.ResourceHandler;
+
 public enum Command {
     GET,
     THROW,
@@ -24,25 +26,11 @@ public enum Command {
     OBSERVE,
     SEARCH;
 	
-	private static Map<String[], Command> aliases;
-	private static ObjectInputStream commandAliasesStream = null;
-	
-	static {
-		Command.load();
-	}
-	
-	/*public static boolean equals(String s) throws IllegalActionException {
-		for(Command temp : Command.values()) {
-			if(s.equals(temp.toString())) {
-				return true;
-			}
-		}
-		throw new IllegalActionException();
-	}*/
+	private static Map<String[], Command> commandAliases;
 	
 	public static boolean isCommand(String stringToCheck) {
-		for(String[] commandAlias : aliases.keySet()) {
-			for(String checkingString : commandAlias) {
+		for(String[] commandAliasElement : commandAliases.keySet()) {
+			for(String checkingString : commandAliasElement) {
 				if(stringToCheck.equalsIgnoreCase(checkingString)) {
 					return true;
 				}
@@ -52,10 +40,10 @@ public enum Command {
 	}
 	
 	public static Command getCommand(String stringToCheck) {
-		for(String[] commandAlias : aliases.keySet()) {
-			for(String checkingString : commandAlias) {
+		for(String[] commandAliasElement : commandAliases.keySet()) {
+			for(String checkingString : commandAliasElement) {
 				if(stringToCheck.equalsIgnoreCase(checkingString)) {
-					Command command = aliases.get(commandAlias);
+					Command command = commandAliases.get(commandAliasElement);
 					return command;
 				}
 			}
@@ -63,26 +51,12 @@ public enum Command {
 		return null;
 	}
 	
-	public static void load() {
-		File aliasFile = null;
-		aliases = new HashMap<String[], Command>();
-		
-		try {
-			aliasFile = new File("src/main/java/util/ActionsAliases_" + Locale.getDefault().getLanguage() + ".properties");
-			commandAliasesStream = new ObjectInputStream(new FileInputStream(aliasFile));
-			aliases = (HashMap<String[], Command>) commandAliasesStream.readObject();
-		} catch (FileNotFoundException e) {
-			//FATAL ERROR: It means that you can't use commands, which means you can't play.
-		} catch (IOException e) {
-			
-		} catch (ClassNotFoundException e) {
-			//We are absolutely sure that the class IS actually found.
-		} finally {
-			try {
-				commandAliasesStream.close();
-			} catch (IOException e) {
-				
-			}
-		}
+	public static Map getCommandAliasesMap() {
+		return commandAliases;
+	}
+	
+	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
+		String commandAliasesFilePath = resourceFolderPath + "/CommandAliases_" + currentLocale.getLanguage() + ".properties"; 
+		commandAliases = (Map<String[], Command>) ResourceHandler.<Command>load(commandAliasesFilePath);
 	}
 }

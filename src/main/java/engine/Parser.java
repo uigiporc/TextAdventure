@@ -62,12 +62,35 @@ public class Parser {
 		if(Item.isItem(inputSubject)) {
 			switch(userCommand) {
 			case USE:
-				System.out.println("case use");
 				Inventory.useItem(inputSubject);
 				break;
-			/*case*/
+			case THROW:
+				/**/
+				break;
+			case GET:
+				/**/
+				break;
+			case EAT:
+				break;
 			}
 		}
-		//if(Direction.isDirection(inputSubject))
+		else if(Direction.isDirection(inputSubject)) {
+			switch(userCommand) {
+			case GO:
+				GameProgress.moveRoom(Direction.getDirection(inputSubject));
+				break;
+			case OBSERVE:
+			}
+		}
+	}
+	
+	private static void handleSubject(String inputSubject) {
+		if(Item.isItem(inputSubject)) {
+			Inventory.useItem(inputSubject);
+		} else if(Direction.isDirection(inputSubject)) {
+			GameProgress.moveRoom(Direction.getDirection(inputSubject));
+		}else {
+			//throw new IllegalActionException();
+		}
 	}
 }

@@ -22,8 +22,9 @@ public class Room {
 	private RoomType setting;
 	private String roomDescription;
 	private LightStatus illumination;
+	private Map<String, RoomContainer> roomContainers= new HashMap<String, RoomContainer>();
 	private Map<String, Item> roomItems = new HashMap<String, Item>();
-	private Map<Direction, Room> adiacentRooms = new HashMap<Direction, Room>();
+	private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
 	private String help;
 	
 	public String getAreaDescription() {
