@@ -22,27 +22,18 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import exam.enumtest;
 
-class Main {
-	
+public class main {
+
+	public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+
 	public static void main(String[] args) {
-		int a = enumtest.a.getCode();
-		System.out.println(enumtest.h.getCode());
-		System.out.println(enumtest.getEnumCode("h"));
-		
-		
-		System.out.println(a);
+		System.out.println("Gioco avviato.");
 		ResourceHandler.loadResources();
-		if(Direction.isDirection("RIGHT")) {
-			System.out.println("meme");
-		}
-		Command.isCommand("USA");
-		System.out.println(new Bomb().getItemName());
-		
-		int i=0;
-		while(i<5) {
+		GameProgress.nextRoom();
+		while (true) {
 			Scanner scanner = new Scanner(System.in);
 			Parser.parseCommand(scanner.nextLine().toUpperCase().trim());
-			i++;
 		}
 	}
 }

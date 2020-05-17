@@ -18,16 +18,14 @@ public enum Command {
     THROW,
     USE,
     JUMP,
-    DROP,
     EAT,
     PUNCH,
     GO,
     BAG,
-    OBSERVE,
-    SEARCH;
-	
+    OBSERVE;
+
 	private static Map<String[], Command> commandAliases;
-	
+
 	public static boolean isCommand(String stringToCheck) {
 		for(String[] commandAliasElement : commandAliases.keySet()) {
 			for(String checkingString : commandAliasElement) {
@@ -38,7 +36,7 @@ public enum Command {
 		}
 		return false;
 	}
-	
+
 	public static Command getCommand(String stringToCheck) {
 		for(String[] commandAliasElement : commandAliases.keySet()) {
 			for(String checkingString : commandAliasElement) {
@@ -50,13 +48,13 @@ public enum Command {
 		}
 		return null;
 	}
-	
+
 	public static Map getCommandAliasesMap() {
 		return commandAliases;
 	}
-	
+
 	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
-		String commandAliasesFilePath = resourceFolderPath + "/CommandAliases_" + currentLocale.getLanguage() + ".properties"; 
+		String commandAliasesFilePath = resourceFolderPath + "/CommandAliases_" + currentLocale.getLanguage() + ".properties";
 		commandAliases = (Map<String[], Command>) ResourceHandler.<Command>load(commandAliasesFilePath);
 	}
 }

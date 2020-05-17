@@ -1,70 +1,78 @@
 /**
- * @author Luigi Porcelli, Computer Science 
+ * @author Luigi Porcelli, Computer Science
  */
 
 package adventure.builder;
 
-/*
- * Maps areaItems and adiacentAreas should have a specific behavior for when we need a specific 
- * item and a specific action (eg. "USE SWORD"). Maybe I could pass the object as a parameter
- * and use it as a KEY in those maps; another solution is to pass a string (eg the string "USE SWORD")
- * after having done the necessary actions. 
- * areaItems could be pair<?,?>, where one of the parameters can be missing.
- */
-
+import map.IllegalMovementException;
+import map.RoomContainer;
+import map.RoomTransition;
+import map.RoomType;
 import util.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
+
 import items.*;
+import engine.GameProgress;
+import util.Command;
 
-public class Room implements Serializable{
-
-	private int ID; 
-	private String roomDescription;
+public class Room implements Serializable {
+	private Integer ID;
+	private RoomType setting;
+	transient private static ResourceBundle roomDescriptionBundle = null;
 	private LightStatus illumination;
-	private Map<String, Item> roomItems = new HashMap<String, Item>();
-	private Map<Direction, Room> adiacentRooms = new HashMap<Direction, Room>();
-	private String help;
-	
-	public String getAreaDescription() {
-		return roomDescription;
-	}
-	
+	private Map<Command, RoomContainer> roomContainers= new HashMap<Command, RoomContainer>();
+	private Map<Command, ArrayList<Item>> roomItems = new HashMap<Command, ArrayList<Item>>();
+	private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
+	transient private static ResourceBundle roomHelpBundle = null;
+
+
+
 	public LightStatus getIllumination() {
 		return illumination;
 	}
-	
-	public Item getItemInArea(String command) throws IllegalActionException{
+
+	public Item getItemInArea(Command command) throws IllegalActionException{
 		if(roomItems.containsKey(command)) {
-			return roomItems.get(command);
+			return roomItems.get(command).get(0);
 		}
 		else {
 			throw new IllegalActionException();
 		}
 	}
-	
-	public void help() {
-		if(illumination == LightStatus.BUIO) {
-			System.out.println("È troppo buio. Prova ad illuminare la stanza prima.");
-		}  
-		else {
-			System.out.println(help);
-		}
-		
+
+	public void move(String direction) throws IllegalMovementException {
+
 	}
-	
-	/*public void move(String direction) throws IllegalMovementException{
-	    
-	}*/
-	
-	public Room(int identificator, LightStatus light, String roomDescr, Map items, Map rooms) {		//should be protected
-		
-		ID = identificator;
+
+	protected void setLight(LightStatus light) {
 		illumination = light;
-		roomDescription = roomDescr;
-		roomItems.putAll(items);
-		adiacentRooms.putAll(rooms);
+	}
+
+	protected RoomType getSetting() {
+		return setting;
+	}
+
+	protected Room(int newID, RoomType newSetting, LightStatus newIllumination,
+				Map newRoomContainers, Map newRoomItems, Map newAdiacentRooms) {		//should be protected
+
+		this.ID = newID;
+		this.setting = newSetting;
+		this.illumination = newIllumination;
+		this.roomContainers= newRoomContainers;
+		this.roomItems = newRoomItems;
+		this.adiacentRooms = newAdiacentRooms;
+
+		// Load from file the area with the given ID
+		/*
+		illumination = LightStatus.ILLUMINATO;
+		roomDescription = "Questa è l'aria iniziale. Enjoy.";
+		roomItems.put("RACCOGLI", new Bottle());
+		roomItems.put("S+", new Sword());
+		adiacentRooms.put(Directions.NORD, this);*/
 	}
 }

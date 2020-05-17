@@ -14,29 +14,29 @@ import items.*;
 import engine.GameProgress;
 
 public abstract class Item extends Thread implements Serializable{
-	
+
 	transient protected static ResourceBundle nameBundle = null;
 	transient protected static ResourceBundle descriptionBundle = null;
 	transient protected static boolean reusable;
-	
+
 	public String getItemName() {
 		return nameBundle.getString(this.getClass().getSimpleName());
 	}
-	
+
 	public String getDescription() {
 		return descriptionBundle.getString(this.getClass().getSimpleName());
 	}
-	
+
 	public abstract void use();
-	
+
 	public boolean equals(Item comparedItem) {
 		return this.getClass().equals(comparedItem.getClass());
 	}
-	
-	public boolean equals(String comparedString) {		
+
+	public boolean equals(String comparedString) {
 		return this.getItemName().equalsIgnoreCase(comparedString);
 	}
-	
+
 	public static Item getItem(String inputItem) {
 		try {
 			for(String searchingString : nameBundle.keySet()){
@@ -52,7 +52,7 @@ public abstract class Item extends Thread implements Serializable{
 			return null;
 		}
 	}
-	
+
 	public static boolean isItem(String inputItem) {
 		try {
 			System.out.println(inputItem);
@@ -68,26 +68,26 @@ public abstract class Item extends Thread implements Serializable{
 			return false;
 		}
 	}
-	
+
 	public static void setNameBundle(Locale currentLocale) {
-		nameBundle = ResourceBundle.getBundle("items.ItemNames", currentLocale);
+		nameBundle = ResourceBundle.getBundle("bundles.ItemNames", currentLocale);
 	}
-	
+
 	public static void setDescriptionBundle(Locale currentLocale) {
-		descriptionBundle = ResourceBundle.getBundle("items.ItemDescriptions", currentLocale);
+		descriptionBundle = ResourceBundle.getBundle("bundles.ItemDescriptions", currentLocale);
 	}
 }
 
 /*TODO:
- *Vasetto vuoto 
+ *Vasetto vuoto
  *Chiave vecchia
  *Graffetta
- *Spada 
+ *Spada
  *Bomba
  *Torcia
  *Fiaccola
  *Pala
  *Acqua
  *
- * 
+ *
 */

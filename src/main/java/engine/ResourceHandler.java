@@ -12,44 +12,48 @@ import java.util.Map;
 import java.util.MissingResourceException;
 
 import items.Item;
+import map.Room;
 import util.Command;
 import util.Direction;
 
 public abstract class ResourceHandler {
-	
+
 	public static void loadResources() {
-		String resourceFolderPath = "src/main/java/util";
+		String resourceFolderPath = "src/main/java/bundles";
 		try {
 			//Get current JVM locale to initialize resources
-			Locale currentLocale = Locale.getDefault();
-			
+			Locale currentLocale;
+			currentLocale = Locale.getDefault();
+
 			//Load Items name and description.
 			Item.setDescriptionBundle(currentLocale);
 			Item.setNameBundle(currentLocale);
-			
+
+			//Load room descriptions and help strings
+			Room.setRoomDescriptionBundle(currentLocale);
+			Room.setRoomHelpBundle(currentLocale);
+
 			//Load Commands and Directions aliases.
-			
+
 			Command.initAliases(resourceFolderPath, currentLocale);
 			Direction.initAliases(resourceFolderPath, currentLocale);
 		}catch(FileNotFoundException |MissingResourceException ex) {
-			System.out.println(Locale.getDefault().getLanguage() + " not found. Switching to: en.");
-			Locale.setDefault(Locale.US);
-			ResourceHandler.loadResources();
+			ex.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public static <T> Map<String[], T> load(String filePath) throws FileNotFoundException{
 		ObjectInputStream aliasesStream = null;
 		File aliasFile = null;
 		Map <String[], T>loadingMap = new HashMap();
-		
+
 		try {
 			aliasFile = new File(filePath);
 			aliasesStream = new ObjectInputStream(new FileInputStream(aliasFile));
 			loadingMap = (HashMap<String[], T>) aliasesStream.readObject();
 			return loadingMap;
-			
+
 		} catch (FileNotFoundException e) {
 			throw new FileNotFoundException();
 		} catch (IOException e) {
@@ -60,7 +64,7 @@ public abstract class ResourceHandler {
 			try {
 				aliasesStream.close();
 			} catch (Exception e) {
-				
+
 			}
 		}
 		return loadingMap;

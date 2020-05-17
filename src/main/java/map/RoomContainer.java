@@ -1,5 +1,7 @@
 package map;
 
-public class RoomContainer {
-	
+import java.io.Serializable;
+
+public class RoomContainer implements Serializable {
+
 }
