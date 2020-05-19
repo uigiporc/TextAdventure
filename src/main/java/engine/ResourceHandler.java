@@ -40,7 +40,7 @@ public abstract class ResourceHandler {
 		}catch(FileNotFoundException |MissingResourceException ex) {
 			ex.printStackTrace();
 		}
-
+		GameProgress.clock.start();
 	}
 
 	public static <T> Map<String[], T> load(String filePath) throws FileNotFoundException{

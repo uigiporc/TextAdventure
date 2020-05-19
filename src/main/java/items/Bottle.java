@@ -1,13 +1,11 @@
 package items;
 
 public class Bottle extends ContainerItem {
-	{
-		/*nameEN = "Jar";
-		descriptionEN = "This is a jar";*/
-	}
-	
+
+	private static final long serialVersionUID = 5704750625867512692L;
+
 	public void use() {
-		
+
 	}
 
 }

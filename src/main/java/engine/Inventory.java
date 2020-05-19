@@ -26,7 +26,7 @@ public class Inventory {
 		throw new ItemNotFoundException();
 	}
 
-	public static Item removeFromBag(String item) throws ItemNotFoundException {
+	public static Item removeFromBag(String item) {
 		Iterator<Item> bagIterator = bag.iterator();
 
 		while (bagIterator.hasNext()) {
@@ -36,12 +36,10 @@ public class Inventory {
 				return tempItem;
 			}
 		}
-		throw new ItemNotFoundException();
+		return null;
 	}
 
 	public static void useItem(String itemToUseName) {
-		if(bag.size() == 0){
-		}
 		for(int i = 0; i < bag.size(); i++) {
 			if(bag.get(i).equals(itemToUseName)) {
 				bag.get(i).use();

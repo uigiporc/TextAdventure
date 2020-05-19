@@ -1,25 +1,29 @@
 package engine;
 
+import java.sql.Time;
+import java.util.BitSet;
 import java.util.Locale;
 
 import items.Item;
 import map.*;
+import obstacles.IllegalItemUsageException;
 import util.Direction;
 import util.LightStatus;
 
 /**
  * GameProgress is a class containing the current game progress.
  */
-public class GameProgress {
+public class GameProgress extends Thread{
 
-	protected static int timeSpent;
+	protected static long totalGameTime;
 	protected static String sessionName;
 	private static Room currentRoom;
 	private static LightStatus playerLight = null;
-
+	private static BitSet visitedRooms;
+	static Thread clock = new Thread();
 
 	public static void nextRoom() {
-		currentRoom = MapLoader.loadRoom();
+		currentRoom = MapLoader.loadRoom(0);
 		System.out.println(currentRoom.getAreaDescription());
 	}
 
@@ -49,11 +53,38 @@ public class GameProgress {
 		return playerLight;
 	}
 
-	public static void moveRoom(Direction direction) {
+	public static void moveRoom(Direction direction) throws IllegalMovementException {
+		currentRoom = currentRoom.move(direction);
+		System.out.println(currentRoom.getAreaDescription());
 	}
 
 	public static void dropItem(Item droppedItem){
 		currentRoom.dropItem(droppedItem);
 	}
 
+	@Override
+	public void run(){
+		Long startGameSession =  System.nanoTime();
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			totalGameTime += System.nanoTime() - startGameSession;
+
+		}
+	}
+
+	public static void newGame(){
+		totalGameTime = 0;
+		visitedRooms.clear();
+		currentRoom = MapLoader.loadRoom(0);
+		ResourceHandler.loadResources();
+
+		/*
+		Needs to get a session name. Looking for a way to get that respecting ECB.
+		 */
+	}
+
+	public static void unlockObstacle(Item item) throws IllegalItemUsageException {
+		currentRoom.doesItUnlock(item);
+	}
 }

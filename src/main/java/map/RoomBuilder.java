@@ -1,17 +1,16 @@
 package map;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import items.Bomb;
+import items.Key;
 import map.RoomContainer;
-import adventure.builder.RoomTransition;
 import map.RoomType;
+import obstacles.ClosedDoor;
 import util.Command;
 import util.Direction;
 import util.LightStatus;
@@ -50,20 +49,14 @@ public class RoomBuilder {
 
 		Room createdRoom;
 		try {
-			oos = new ObjectOutputStream(new FileOutputStream(roomFilePath));
+			FileOutputStream oosfos = new FileOutputStream(roomFilePath);
+			oos = new ObjectOutputStream(oosfos);
 			oosDescEN = new ObjectOutputStream(new FileOutputStream(roomDescriptionFileEN));
 			oosDescIT = new ObjectOutputStream(new FileOutputStream(roomDescriptionFileIT));
 			oosHelpEN = new ObjectOutputStream(new FileOutputStream(roomHelpFileEN));
 			oosHelpIT = new ObjectOutputStream(new FileOutputStream(roomHelpFileIT));
 
-			/*
-			private int ID;
-			private RoomType setting;
-			private LightStatus illumination;
-			private Map<Command, RoomContainer> roomContainers= new HashMap<Command, RoomContainer>();
-			private Map<Command, Item[]> roomItems = new HashMap<Command, Item[]>();
-			private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
-			 */
+
 
 			Map<Command, RoomContainer> roomContainers = new HashMap<>();
 			Map<Command, ArrayList<Item>> items = new HashMap();
@@ -76,18 +69,54 @@ public class RoomBuilder {
 
 			createdRoom = new Room(0, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
 					items, adiacentRooms);
-			//	public Room(int newID, RoomType newSetting, LightStatus newIllumination,
-			//				Map newRoomContainers, Map newRoomItems, Map newAdiacentRooms)
-
-
 
 			oos.writeObject(createdRoom);
+			System.out.println(roomFilePath.length() + " position: " + oosfos.getChannel().position());
+
+			Map<Command, RoomContainer> roomContainers1 = new HashMap<>();
+			Map<Command, ArrayList<Item>> items1 = new HashMap();
+			Map<Direction, RoomTransition> adiacentRooms1 = new HashMap<Direction, RoomTransition>();
+			RoomTransition roomTr1 = new RoomTransition(2, new ClosedDoor(), new File("src/main/resources/doorOpen_2.ogg"));
+			RoomTransition roomTr11 = new RoomTransition(0, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms1.put(Direction.EAST, roomTr1);
+			adiacentRooms1.put(Direction.SOUTH, roomTr11);
+			ArrayList<Item> item1= new ArrayList<>();
+			item.add(new Key());
+			items.put(Command.GET, item);
+
+			createdRoom = new Room(1, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers1,
+					items1, adiacentRooms1);
+			oos.writeObject(createdRoom);
+			System.out.println(roomFilePath.length());
+			oos.close();
+			generateIndexes();
 		}
 		catch(IOException ex){
 			ex.printStackTrace();
-		} finally {
-			System.out.println("finallyyy");
-
 		}
 	}
+
+	private static void generateIndexes(){
+		try {
+			FileInputStream fis = new FileInputStream(roomFilePath);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			FileOutputStream fos = new FileOutputStream("src/main/java/bundles/room_data.dat");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+			HashMap<Integer, Long> mapIndexes = new HashMap<>();
+			Room room;
+			for(int i = 0; i<2; i++) {
+				mapIndexes.put(i, fis.getChannel().position());
+				room = (Room) ois.readObject();
+			}
+			oos.writeObject(mapIndexes);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

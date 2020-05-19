@@ -12,6 +12,7 @@ package map;
  * areaItems could be pair<?,?>, where one of the parameters can be missing.
  */
 
+import obstacles.IllegalItemUsageException;
 import util.*;
 
 import java.io.Serializable;
@@ -20,6 +21,8 @@ import java.util.*;
 import items.*;
 
 public class Room implements Serializable {
+
+	private static final long serialVersionUID = 2512059451189906531L;
 	private Integer ID;
 	private RoomType setting;
 	transient private static ResourceBundle roomDescriptionBundle = null;
@@ -30,7 +33,7 @@ public class Room implements Serializable {
 	transient private static ResourceBundle roomHelpBundle = null;
 
 	public String getAreaDescription() {
-		return roomDescriptionBundle.getString("0");
+		return roomDescriptionBundle.getString(ID.toString());
 	}
 
 	public LightStatus getIllumination() {
@@ -67,10 +70,6 @@ public class Room implements Serializable {
 
 	}
 
-	public void move(String direction) throws IllegalMovementException{
-
-	}
-
 	protected void setLight(LightStatus light) {
 		illumination = light;
 	}
@@ -96,5 +95,27 @@ public class Room implements Serializable {
 		this.roomContainers= newRoomContainers;
 		this.roomItems = newRoomItems;
 		this.adiacentRooms = newAdiacentRooms;
+	}
+
+	public boolean doesItUnlock(Item item) throws IllegalItemUsageException {
+		for(Direction tempDirection : adiacentRooms.keySet()){
+			if(adiacentRooms.get(tempDirection).useItemToUnlock(item)){
+				return true;
+			}
+		}
+		throw new IllegalItemUsageException();
+	}
+
+	public Room move(Direction direction) throws IllegalMovementException {
+		int movingRoomId = adiacentRooms.get(direction).moveToRoom();
+		return MapLoader.loadRoom(movingRoomId);
+	}
+
+	public void openContainer(String containerName){
+		for(RoomContainer container : roomContainers.get(Command.GET)){
+			if(container.equals(containerName)){
+				roomContainers.get(command).open();
+			}
+		}
 	}
 }

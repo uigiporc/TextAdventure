@@ -3,34 +3,26 @@ package obstacles;
 import items.*;
 
 public class ClosedDoor extends Obstacle {
+
+	private static final long serialVersionUID = 2394726890544852907L;
 	private boolean lock = true;
 	private Item unlockItem;
-	
-	public boolean isLocked() {
-		return lock;
-	}
-	
-	public void unlock(Item usedItem) throws IllegalItemUsageException {
-		if(unlockItem.equals(usedItem)) {
-			lock = false;
-		}
-		else {
-		    throw new IllegalItemUsageException();
-		}
+
+	@Override
+	public boolean isPassed() {
+		return !lock;
 	}
 
 	@Override
-	public boolean move() {
-		if(lock) {
-			return true;
+	public boolean unlock(Item usedItem) {
+		if(unlockItem.equals(usedItem)) {
+			lock = false;
 		}
-		else {
-			return false;
-		}
+		return this.isPassed();
 	}
-	
+
 	public static void helpObstacle() {
 		//Print a short string about unlocking this sht
 	}
-	
+
 }

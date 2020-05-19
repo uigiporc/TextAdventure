@@ -55,7 +55,6 @@ public abstract class Item extends Thread implements Serializable{
 
 	public static boolean isItem(String inputItem) {
 		try {
-			System.out.println(inputItem);
 			for(String searchingString : nameBundle.keySet()){
 				if(nameBundle.getString(searchingString).equalsIgnoreCase(inputItem)) {
 					return true;

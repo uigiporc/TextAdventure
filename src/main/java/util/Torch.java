@@ -1,19 +1,20 @@
 package util;
 
+import engine.Inventory;
 import items.Item;
 import engine.GameProgress;
+import items.ItemNotFoundException;
 
 public class Torch extends Item{
 	static{
 		reusable = false;
 	}
-	
-	private Thread torchTurnOn = new Thread(this);
-	
+
 	public void use() {
+		Thread torchTurnOn = new Thread(this);
 		torchTurnOn.start();
 	}
-	
+
 	@Override
 	public void run() {
 		GameProgress.setPlayerLight(LightStatus.ILLUMINATO);
@@ -24,6 +25,7 @@ public class Torch extends Item{
 		} finally {
 			System.out.println("La torcia si è spenta");
 			GameProgress.resetPlayerLight();
+			Inventory.removeFromBag(this.getItemName());
 		}
 	}
 }

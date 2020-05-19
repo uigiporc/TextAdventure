@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 import items.Item;
 import items.ItemNotFoundException;
 import items.Sword;
+import map.IllegalMovementException;
 import map.Room;
 import util.Command;
 import util.Direction;
@@ -43,19 +44,27 @@ public class Parser {
 							handleCommandAndSubject(Command.getCommand(subjectToParse), null);
 						}
 					}
-				} catch (Exception ex){
-					System.out.println("xd");
+				} catch (IllegalActionException e) {
+					e.printStackTrace();
+				} catch (ItemNotFoundException e) {
+					e.printStackTrace();
+				} catch (IllegalMovementException e) {
+					e.printStackTrace();
 				}
 			}
 
 		}
 	}
 
-	private static void handleCommandAndSubject(Command userCommand, String inputSubject) throws IllegalActionException, ItemNotFoundException {
+	private static void handleCommandAndSubject(Command userCommand, String inputSubject) throws IllegalActionException, ItemNotFoundException, IllegalMovementException {
 		if(inputSubject == null){
 			switch (userCommand){
 				case BAG: {
 					Inventory.print();
+					break;
+				}
+				default: {
+					throw new IllegalActionException();
 				}
 			}
 		}
@@ -66,7 +75,7 @@ public class Parser {
 				break;
 			}
 			case THROW: {
-				GameProgress.getCurrentRoom().dropItem(Inventory.removeFromBag(inputSubject));
+				GameProgress.dropItem(Inventory.removeFromBag(inputSubject));
 				break;
 			}
 			case GET: {
@@ -85,6 +94,9 @@ public class Parser {
 				GameProgress.moveRoom(Direction.getDirection(inputSubject));
 				break;
 			}
+				default: {
+					throw new IllegalActionException();
+				}
 			}
 		}
 	}
