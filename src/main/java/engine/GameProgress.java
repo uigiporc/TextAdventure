@@ -22,9 +22,13 @@ public class GameProgress extends Thread{
 	private static BitSet visitedRooms;
 	static Thread clock = new Thread();
 
+	static {
+		//visitedRooms.clear();
+	}
+
 	public static void nextRoom() {
 		currentRoom = MapLoader.loadRoom(0);
-		System.out.println(currentRoom.getAreaDescription());
+		StringPrinter.printString(currentRoom.getAreaDescription());
 	}
 
 	public static Room getCurrentRoom() {
@@ -55,7 +59,7 @@ public class GameProgress extends Thread{
 
 	public static void moveRoom(Direction direction) throws IllegalMovementException {
 		currentRoom = currentRoom.move(direction);
-		System.out.println(currentRoom.getAreaDescription());
+		StringPrinter.printString(currentRoom.getAreaDescription());
 	}
 
 	public static void dropItem(Item droppedItem){

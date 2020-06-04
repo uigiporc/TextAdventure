@@ -58,7 +58,7 @@ public class RoomBuilder {
 
 
 
-			Map<Command, RoomContainer> roomContainers = new HashMap<>();
+			ArrayList roomContainers = new ArrayList();
 			Map<Command, ArrayList<Item>> items = new HashMap();
 			Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
 			RoomTransition roomTr = new RoomTransition(1, null, new File("src/main/resources/doorOpen_2.ogg"));
@@ -71,9 +71,9 @@ public class RoomBuilder {
 					items, adiacentRooms);
 
 			oos.writeObject(createdRoom);
-			System.out.println(roomFilePath.length() + " position: " + oosfos.getChannel().position());
+			//System.out.println(roomFilePath.length() + " position: " + oosfos.getChannel().position());
 
-			Map<Command, RoomContainer> roomContainers1 = new HashMap<>();
+			ArrayList<RoomContainer> roomContainers1 = new ArrayList<>();
 			Map<Command, ArrayList<Item>> items1 = new HashMap();
 			Map<Direction, RoomTransition> adiacentRooms1 = new HashMap<Direction, RoomTransition>();
 			RoomTransition roomTr1 = new RoomTransition(2, new ClosedDoor(), new File("src/main/resources/doorOpen_2.ogg"));
@@ -87,7 +87,7 @@ public class RoomBuilder {
 			createdRoom = new Room(1, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers1,
 					items1, adiacentRooms1);
 			oos.writeObject(createdRoom);
-			System.out.println(roomFilePath.length());
+			//System.out.println(roomFilePath.length());
 			oos.close();
 			generateIndexes();
 		}

@@ -18,7 +18,6 @@ public class RoomTransition implements Serializable{
 		if(transitionObstacle == null || transitionObstacle.isObstaclePassed()) {
 			return transitioningRoomId;
 		}
-
 		throw new IllegalMovementException();
 	}
 

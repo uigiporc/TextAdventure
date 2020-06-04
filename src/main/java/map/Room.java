@@ -27,7 +27,7 @@ public class Room implements Serializable {
 	private RoomType setting;
 	transient private static ResourceBundle roomDescriptionBundle = null;
 	private LightStatus illumination;
-	private Map<Command, RoomContainer> roomContainers= new HashMap<Command, RoomContainer>();
+	private ArrayList<RoomContainer> roomContainers;
 	private Map<Command, ArrayList<Item>> roomItems = new HashMap<Command, ArrayList<Item>>();
 	private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
 	transient private static ResourceBundle roomHelpBundle = null;
@@ -44,6 +44,8 @@ public class Room implements Serializable {
 		if(roomItems.containsKey(command)) {
 			for(Item checkedItem : roomItems.get(command)){
 				if(checkedItem.equals(itemName)){
+					roomItems.get(command).remove(checkedItem);
+					//roomItems.replace(command, roomItems.get(command), roomItems.get(command).remove(checkedItem));
 					return checkedItem;
 				}
 			}
@@ -87,12 +89,12 @@ public class Room implements Serializable {
 	}
 
 	public Room(int newID, RoomType newSetting, LightStatus newIllumination,
-				Map newRoomContainers, Map newRoomItems, Map newAdiacentRooms) {		//should be protected
+				ArrayList newRoomContainers, Map newRoomItems, Map newAdiacentRooms) {		//should be protected
 
 		this.ID = newID;
 		this.setting = newSetting;
 		this.illumination = newIllumination;
-		this.roomContainers= newRoomContainers;
+		this.roomContainers = newRoomContainers;
 		this.roomItems = newRoomItems;
 		this.adiacentRooms = newAdiacentRooms;
 	}
@@ -107,14 +109,21 @@ public class Room implements Serializable {
 	}
 
 	public Room move(Direction direction) throws IllegalMovementException {
-		int movingRoomId = adiacentRooms.get(direction).moveToRoom();
-		return MapLoader.loadRoom(movingRoomId);
+		try{
+			int movingRoomId = adiacentRooms.get(direction).moveToRoom();
+			return MapLoader.loadRoom(movingRoomId);
+		} catch (NullPointerException e) {
+			throw new IllegalMovementException();
+		}
 	}
 
-	public void openContainer(String containerName){
-		for(RoomContainer container : roomContainers.get(Command.GET)){
-			if(container.equals(containerName)){
-				roomContainers.get(command).open();
+
+	public void openContainer(String containerName) {
+		Iterator it = roomContainers.iterator();
+		while (it.hasNext()){
+			RoomContainer tempContainer = (RoomContainer) it.next();
+			if (tempContainer.equals(containerName)) {
+				tempContainer.open(roomItems);
 			}
 		}
 	}

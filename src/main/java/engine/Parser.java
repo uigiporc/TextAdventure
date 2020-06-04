@@ -44,12 +44,8 @@ public class Parser {
 							handleCommandAndSubject(Command.getCommand(subjectToParse), null);
 						}
 					}
-				} catch (IllegalActionException e) {
-					e.printStackTrace();
-				} catch (ItemNotFoundException e) {
-					e.printStackTrace();
-				} catch (IllegalMovementException e) {
-					e.printStackTrace();
+				} catch (IllegalActionException | ItemNotFoundException | IllegalMovementException e) {
+					System.out.println(e.getMessage());
 				}
 			}
 
