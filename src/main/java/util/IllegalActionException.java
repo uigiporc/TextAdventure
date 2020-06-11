@@ -1,5 +1,7 @@
 package util;
 
+import java.util.ResourceBundle;
+
 public class IllegalActionException extends Exception {
 
 	/**
@@ -9,6 +11,6 @@ public class IllegalActionException extends Exception {
 	
 	@Override
 	public String getMessage() {
-		return "Azione non consentita";
+		return ResourceBundle.getBundle("bundles/ExceptionMessageBundle").getString(this.getClass().getSimpleName());
 	}
 }

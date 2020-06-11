@@ -1,5 +1,7 @@
 package obstacles;
 
+import java.util.ResourceBundle;
+
 public class IllegalItemUsageException extends Exception {
 
     /**
@@ -9,6 +11,6 @@ public class IllegalItemUsageException extends Exception {
 
     @Override
     public String getMessage() {
-    	return "Non puoi usare lo strumento in questo modo.";
+        return ResourceBundle.getBundle("bundles/ExceptionMessageBundle").getString(this.getClass().getSimpleName());
     }
 }

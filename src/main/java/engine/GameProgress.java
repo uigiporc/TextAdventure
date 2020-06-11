@@ -4,11 +4,17 @@ import java.sql.Time;
 import java.util.BitSet;
 import java.util.Locale;
 
+import com.sun.jdi.ObjectCollectedException;
+import gui.UIFrame;
+import gui.UIHandler;
 import items.Item;
 import map.*;
 import obstacles.IllegalItemUsageException;
+import obstacles.ObstacledRoomException;
 import util.Direction;
 import util.LightStatus;
+
+import javax.swing.text.Document;
 
 /**
  * GameProgress is a class containing the current game progress.
@@ -16,33 +22,13 @@ import util.LightStatus;
 public class GameProgress extends Thread{
 
 	protected static long totalGameTime;
-	protected static String sessionName;
 	private static Room currentRoom;
 	private static LightStatus playerLight = null;
-	private static BitSet visitedRooms;
-	static Thread clock = new Thread();
-
-	static {
-		//visitedRooms.clear();
-	}
-
-	public static void nextRoom() {
-		currentRoom = MapLoader.loadRoom(0);
-		StringPrinter.printString(currentRoom.getAreaDescription());
-	}
+	private static Thread clock = new Thread();
+	private static Inventory bag;
 
 	public static Room getCurrentRoom() {
 		return currentRoom;
-	}
-
-	public static boolean setLang(Locale changedLocale) {
-		try {
-			Locale.setDefault(changedLocale);
-			return true;
-
-		} catch(SecurityException ex) {
-			return false;
-		}
 	}
 
 	public static void setPlayerLight(LightStatus light) {
@@ -57,9 +43,8 @@ public class GameProgress extends Thread{
 		return playerLight;
 	}
 
-	public static void moveRoom(Direction direction) throws IllegalMovementException {
+	public static void moveRoom(Direction direction) throws IllegalMovementException, ObstacledRoomException {
 		currentRoom = currentRoom.move(direction);
-		StringPrinter.printString(currentRoom.getAreaDescription());
 	}
 
 	public static void dropItem(Item droppedItem){
@@ -79,15 +64,18 @@ public class GameProgress extends Thread{
 
 	public static void newGame(){
 		totalGameTime = 0;
-		visitedRooms.clear();
-		currentRoom = MapLoader.loadRoom(0);
-		ResourceHandler.loadResources();
-
-		/*
-		Needs to get a session name. Looking for a way to get that respecting ECB.
-		 */
+		currentRoom = MapLoader.getRoom(0);
+		bag = Inventory.getInventory();
+		new Thread(clock).start();
 	}
 
+	public static void getItem() {
+
+	}
+
+	public static Inventory getBag() {
+		return bag;
+	}
 	public static void unlockObstacle(Item item) throws IllegalItemUsageException {
 		currentRoom.doesItUnlock(item);
 	}

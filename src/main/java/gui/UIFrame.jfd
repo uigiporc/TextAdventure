@@ -1,0 +1,102 @@
+JFDML JFormDesigner: "7.0.2.0.298" Java: "11.0.7" encoding: "UTF-8"
+
+new FormModel {
+	"i18n.bundlePackage": "bundles"
+	"i18n.bundleName": "UIbundle"
+	"i18n.keyPrefix": "FINALTEST"
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::586:x, seq {comp commandTextField:::::x, space :::p, comp sendButton:::p::p, space :p:12:p}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :::p, comp scrollPane1::::273:x, space u:::p, par l {comp commandTextField:::p::p, comp sendButton::l:p::p}, space :p:20:p}}"
+		} ) {
+			name: "UIFrame"
+			"visible": true
+			"resizable": false
+			"title": "Into the unknown"
+			"$sizePolicy": 1
+			"minimumSize": new java.awt.Dimension( 600, 400 )
+			"defaultCloseOperation": 0
+			auxiliary() {
+				"JavaCodeGenerator.variableName": "JFrame"
+			}
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "UIFrameWindowClosing", true ) )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "sendButton"
+				"text": new FormMessage( null, "FINALTEST.send" )
+				"toolTipText": new FormMessage( null, "FINALTEST.buttonToolTip" )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sendButtonActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "commandTextField"
+				"toolTipText": new FormMessage( null, "FINALTEST.textfieldToolTip" )
+				addEvent( new FormEvent( "java.awt.event.KeyListener", "keyPressed", "commandTextFieldKeyPressed", true ) )
+				addEvent( new FormEvent( "java.awt.event.KeyListener", "keyPressed", "commandTextFieldKeyPressed", true ) )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				"verticalScrollBarPolicy": 22
+				add( new FormComponent( "javax.swing.JEditorPane" ) {
+					name: "logPane"
+					"editable": false
+					"font": new java.awt.Font( "Bodoni MT", 0, 18 )
+				} )
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu1"
+					"text": "File"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem3"
+						"text": new FormMessage( null, "FINALTEST.save" )
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 83, 130, false )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem4"
+						"text": new FormMessage( null, "FINALTEST.load" )
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 76, 130, false )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu2"
+					"text": new FormMessage( null, "FINALTEST.settings" )
+					"actionCommand": new FormMessage( null, "FINALTEST.settings" )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "menu6"
+						"text": new FormMessage( null, "FINALTEST.language" )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "radioButtonMenuItem1"
+							"text": new FormMessage( null, "FINALTEST.english" )
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "radioButtonMenuItem1ItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "radioButtonMenuItem2"
+							"text": new FormMessage( null, "FINALTEST.italian" )
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "radioButtonMenuItem2ItemStateChanged", true ) )
+						} )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu3"
+					"text": new FormMessage( null, "FINALTEST.help" )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem5"
+						"text": new FormMessage( null, "FINALTEST.tutorial" )
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 72, 130, false )
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 600, 395 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+	}
+}

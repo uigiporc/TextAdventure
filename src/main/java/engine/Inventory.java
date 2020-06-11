@@ -1,19 +1,25 @@
 package engine;
 
+import gui.UIHandler;
 import items.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 
-public class Inventory {
-	private static ArrayList<Item> bag = new ArrayList<Item>();
-	//private static short bagMaxItems;
+public class Inventory implements Serializable {
+	private static Inventory inventory = new Inventory();
+	private ArrayList<Item> bag;
+	private static final short bagMaxItems = 3;
 
-	public static void addToBag(Item addedItem) {
+	public void addToBag(Item addedItem) {
 		bag.add(addedItem);
-		System.out.println(addedItem.getItemName() + "aggiunto allo zaino. N Item: " + bag.size());
+		UIHandler.printInFrame(addedItem.getItemName() + " "+ ResourceBundle.getBundle("bundles/engineOutText")
+				.getString("itemIntoInventory") + "\n");
 	}
 
-	public static Item getFromBag(String item) throws ItemNotFoundException {
+	public Item getFromBag(String item) throws ItemNotFoundException {
 		Iterator<Item> bagIterator = bag.iterator();
 
 		while (bagIterator.hasNext()) {
@@ -26,7 +32,7 @@ public class Inventory {
 		throw new ItemNotFoundException();
 	}
 
-	public static Item removeFromBag(String item) {
+	public Item removeFromBag(String item) {
 		Iterator<Item> bagIterator = bag.iterator();
 
 		while (bagIterator.hasNext()) {
@@ -39,7 +45,7 @@ public class Inventory {
 		return null;
 	}
 
-	public static void useItem(String itemToUseName) {
+	public void useItem(String itemToUseName) {
 		for(int i = 0; i < bag.size(); i++) {
 			if(bag.get(i).equals(itemToUseName)) {
 				bag.get(i).use();
@@ -47,17 +53,25 @@ public class Inventory {
 		}
 	}
 
-	public static void print(){
+	public void print(){
 		if(bag.size() == 0){
-			System.out.println("Nessun oggetto nell'inventario");
+			UIHandler.printInFrame(ResourceBundle.getBundle("bundles/engineOutText").getString("emptyInventory") + "\n");
 		}
 		else{
+			UIHandler.printInFrame(ResourceBundle.getBundle("bundles/engineOutText").getString("bagContent") + ":\n");
 			for(int i = 0; i < bag.size(); i++){
-				System.out.println(bag.get(i).getItemName());
-				System.out.println(bag.get(i).getDescription());
+				UIHandler.printInFrame(i+1 + ". " + bag.get(i).getItemName() + "\n");
+				//UIHandler.printInFrame(bag.get(i).getDescription() + "\n");
 			}
 		}
+	}
 
+	private Inventory() {
+		bag = new ArrayList<>();
+	}
+
+	public static Inventory getInventory() {
+		return inventory;
 	}
 }
 

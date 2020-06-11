@@ -2,18 +2,19 @@ package items;
 
 import engine.GameProgress;
 import engine.Inventory;
+import gui.UIHandler;
 import obstacles.IllegalItemUsageException;
 
-public class Key extends Item{
+public class Key extends Item {
 
 
     @Override
     public void use() {
         try {
             GameProgress.unlockObstacle(this);
-            Inventory.removeFromBag(this.toString());
+            GameProgress.getBag().removeFromBag(this.getItemName());
         } catch (IllegalItemUsageException e) {
-            System.out.println("Can't use this item like that");
+            UIHandler.printInFrame(e.getMessage() + "\n");
         }
     }
 }

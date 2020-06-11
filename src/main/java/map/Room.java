@@ -12,7 +12,9 @@ package map;
  * areaItems could be pair<?,?>, where one of the parameters can be missing.
  */
 
+import engine.RoomEvent;
 import obstacles.IllegalItemUsageException;
+import obstacles.ObstacledRoomException;
 import util.*;
 
 import java.io.Serializable;
@@ -28,52 +30,44 @@ public class Room implements Serializable {
 	transient private static ResourceBundle roomDescriptionBundle = null;
 	private LightStatus illumination;
 	private ArrayList<RoomContainer> roomContainers;
-	private Map<Command, ArrayList<Item>> roomItems = new HashMap<Command, ArrayList<Item>>();
+	private ArrayList<Item> roomItems = new ArrayList<Item>();
 	private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
-	transient private static ResourceBundle roomHelpBundle = null;
+	private String stepOnEvent;
 
 	public String getAreaDescription() {
 		return roomDescriptionBundle.getString(ID.toString());
 	}
 
-	public LightStatus getIllumination() {
-		return illumination;
-	}
 
-	public Item getItemInArea(Command command, String itemName) throws IllegalActionException{
-		if(roomItems.containsKey(command)) {
-			for(Item checkedItem : roomItems.get(command)){
-				if(checkedItem.equals(itemName)){
-					roomItems.get(command).remove(checkedItem);
-					//roomItems.replace(command, roomItems.get(command), roomItems.get(command).remove(checkedItem));
-					return checkedItem;
-				}
+
+	public Item getItemInArea(String itemName) throws IllegalActionException{
+		roomItems.contains(itemName);
+		for(Item checkedItem : roomItems) {
+			if(checkedItem.equals(itemName)) {
+				roomItems.remove(checkedItem);
+				//roomItems.replace(command, roomItems.get(command), roomItems.get(command).remove(checkedItem));
+				return checkedItem;
 			}
 		}
+
 		//If the for-each ends without returning an Item, there's no such item in the Room
 		//So the command is illegal
 		throw new IllegalActionException();
 
 	}
 
-	public void dropItem(Item droppedItem){
-		ArrayList<Item> tempItems = roomItems.get(Command.GET);
-		tempItems.add(droppedItem);
-		roomItems.put(Command.GET, tempItems);
+	public void dropItem(Item droppedItem) {
+		roomItems.add(droppedItem);
 	}
 
-	public void help() {
+	public boolean isIlluminated() {
 		if(illumination == LightStatus.BUIO) {
-			System.out.println("È troppo buio. Prova ad illuminare la stanza prima.");
+			return false;
 		}
 		else {
-			System.out.println(roomHelpBundle.getString("0"));
+			return true;
 		}
 
-	}
-
-	protected void setLight(LightStatus light) {
-		illumination = light;
 	}
 
 	protected RoomType getSetting() {
@@ -81,15 +75,11 @@ public class Room implements Serializable {
 	}
 
 	public static void setRoomDescriptionBundle(Locale currentLocale) {
-		roomDescriptionBundle = ResourceBundle.getBundle("bundles.RoomDescriptions", currentLocale);
-	}
-
-	public static void setRoomHelpBundle(Locale currentLocale) {
-		roomHelpBundle = ResourceBundle.getBundle("bundles.RoomHelp", currentLocale);
+		roomDescriptionBundle = ResourceBundle.getBundle("bundles.RoomDescriptions");
 	}
 
 	public Room(int newID, RoomType newSetting, LightStatus newIllumination,
-				ArrayList newRoomContainers, Map newRoomItems, Map newAdiacentRooms) {		//should be protected
+				ArrayList newRoomContainers, ArrayList newRoomItems, Map newAdiacentRooms, String event) {		//should be protected
 
 		this.ID = newID;
 		this.setting = newSetting;
@@ -97,6 +87,7 @@ public class Room implements Serializable {
 		this.roomContainers = newRoomContainers;
 		this.roomItems = newRoomItems;
 		this.adiacentRooms = newAdiacentRooms;
+		this.stepOnEvent = event;
 	}
 
 	public boolean doesItUnlock(Item item) throws IllegalItemUsageException {
@@ -108,23 +99,82 @@ public class Room implements Serializable {
 		throw new IllegalItemUsageException();
 	}
 
-	public Room move(Direction direction) throws IllegalMovementException {
+	public Room move(Direction direction) throws IllegalMovementException, ObstacledRoomException{
 		try{
 			int movingRoomId = adiacentRooms.get(direction).moveToRoom();
-			return MapLoader.loadRoom(movingRoomId);
+			return MapLoader.getRoom(movingRoomId);
 		} catch (NullPointerException e) {
 			throw new IllegalMovementException();
 		}
 	}
 
 
-	public void openContainer(String containerName) {
-		Iterator it = roomContainers.iterator();
-		while (it.hasNext()){
-			RoomContainer tempContainer = (RoomContainer) it.next();
-			if (tempContainer.equals(containerName)) {
+	public void openContainer(RoomContainer searchedContainer) {
+		for (RoomContainer tempContainer : roomContainers){
+			if (tempContainer.equals(searchedContainer)) {
 				tempContainer.open(roomItems);
 			}
 		}
+	}
+
+	public String roomInformations() {
+		if(!this.isIlluminated()) {
+			return ResourceBundle.getBundle("bundles/engineOutText").getString("noLight");
+		}
+		String info = "";
+		info = info + this.getAreaDescription();
+		info = info + ResourceBundle.getBundle("bundles/engineOutText").getString("directions") + ":";
+		for (Direction direction : adiacentRooms.keySet()) {
+			info = info + " " + direction.toString() + " -";
+		}
+		info = info + "\n";
+		info = info + (ResourceBundle.getBundle("bundles/engineOutText").getString("content")) + (":");
+		if(this.roomItems.size() > 0) {
+			for (int i = 0; i < roomItems.size(); i++) {
+				info = info + (" " + roomItems.get(i).getItemName() + " -");
+			}
+		}
+		if (this.roomContainers.size() > 0) {
+			for (int i = 0; i < roomContainers.size(); i++) {
+				info = info + " " +  roomContainers.get(i).getName()
+						+ "(" + roomContainers.get(i).getState() + ")" + " -";
+			}
+		}
+		return info;
+	}
+
+	public void startEvent() {
+		if (RoomEvent.startEvent(stepOnEvent)) {
+			stepOnEvent = "";
+		}
+	}
+
+    public void closeContainer(RoomContainer searchedContainer) {
+		for (RoomContainer tempContainer : roomContainers){
+			if (tempContainer.equals(searchedContainer)) {
+				tempContainer.close(roomItems);
+			}
+		}
+    }
+
+    public String directionInformation(Direction direction) {
+	    try{
+	        return adiacentRooms.get(direction).info();
+        } catch (NullPointerException e) {
+			return ResourceBundle.getBundle("bundles/engineOutText").getString("noDirection");
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Room room = (Room) o;
+		return ID.equals(room.ID);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(ID);
 	}
 }

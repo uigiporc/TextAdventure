@@ -2,7 +2,7 @@ package engine;
 
 public class SaveStream {
     public static void saveProgress() {
-	
+		//Save all areas, current area, inventory.
     }
     
     public static void loadProgress() {

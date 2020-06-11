@@ -1,20 +1,16 @@
 package map;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.lang.reflect.Array;
+import java.util.*;
 
-import items.Bomb;
-import items.Key;
+import items.*;
 import map.RoomContainer;
 import map.RoomType;
 import obstacles.ClosedDoor;
 import util.Command;
 import util.Direction;
 import util.LightStatus;
-import items.Item;
 
 public class RoomBuilder {
 	static File roomFilePath;
@@ -22,6 +18,11 @@ public class RoomBuilder {
 	static File roomDescriptionFileIT;
 	static File roomHelpFileEN;
 	static File roomHelpFileIT;
+	static ArrayList roomContainers = new ArrayList();
+	static Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
+	static RoomTransition roomTr;
+	static ArrayList<Item> item= new ArrayList<>();
+	static ArrayList<Item> containerContent = new ArrayList<>();
 
 	static {
 		try {
@@ -56,38 +57,144 @@ public class RoomBuilder {
 			oosHelpEN = new ObjectOutputStream(new FileOutputStream(roomHelpFileEN));
 			oosHelpIT = new ObjectOutputStream(new FileOutputStream(roomHelpFileIT));
 
+			//--- Room 0 ---
 
-
-			ArrayList roomContainers = new ArrayList();
-			Map<Command, ArrayList<Item>> items = new HashMap();
-			Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
-			RoomTransition roomTr = new RoomTransition(1, null, new File("src/main/resources/doorOpen_2.ogg"));
+			roomTr = new RoomTransition(1, new ClosedDoor(new Key()), new File("src/main/resources/doorOpen_2.ogg"));
 			adiacentRooms.put(Direction.NORTH, roomTr);
-			ArrayList<Item> item= new ArrayList<>();
-			item.add(new Bomb());
-			items.put(Command.GET, item);
-
+			containerContent.add(new Key());
+			roomContainers.add(new Chest(containerContent));
 			createdRoom = new Room(0, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
-					items, adiacentRooms);
-
+					item, adiacentRooms, "");
 			oos.writeObject(createdRoom);
+			clear();
+
 			//System.out.println(roomFilePath.length() + " position: " + oosfos.getChannel().position());
 
-			ArrayList<RoomContainer> roomContainers1 = new ArrayList<>();
-			Map<Command, ArrayList<Item>> items1 = new HashMap();
-			Map<Direction, RoomTransition> adiacentRooms1 = new HashMap<Direction, RoomTransition>();
-			RoomTransition roomTr1 = new RoomTransition(2, new ClosedDoor(), new File("src/main/resources/doorOpen_2.ogg"));
-			RoomTransition roomTr11 = new RoomTransition(0, null, new File("src/main/resources/doorOpen_2.ogg"));
-			adiacentRooms1.put(Direction.EAST, roomTr1);
-			adiacentRooms1.put(Direction.SOUTH, roomTr11);
-			ArrayList<Item> item1= new ArrayList<>();
-			item.add(new Key());
-			items.put(Command.GET, item);
+			//--- Room 1 ---
 
-			createdRoom = new Room(1, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers1,
-					items1, adiacentRooms1);
+			roomTr = new RoomTransition(2, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(0, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+			roomTr = new RoomTransition(5, new ClosedDoor(new Key()), new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.NORTH, roomTr);
+			createdRoom = new Room(1, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
 			oos.writeObject(createdRoom);
-			//System.out.println(roomFilePath.length());
+			clear();
+
+			//--- Room 2 ---
+
+			roomTr = new RoomTransition(3, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(1, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.WEST, roomTr);
+			createdRoom = new Room(2, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 3 ---
+
+			roomTr = new RoomTransition(4, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+			roomTr = new RoomTransition(6, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(2, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.WEST, roomTr);
+			createdRoom = new Room(3, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "madScientist");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 4 ---
+
+			roomTr = new RoomTransition(3, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.NORTH, roomTr);
+			item.add(new OldBook());
+			createdRoom = new Room(4, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 5 ---
+
+			roomTr = new RoomTransition(1, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+			createdRoom = new Room(5, RoomType.INDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 6 ---
+
+			roomTr = new RoomTransition(7, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.NORTH, roomTr);
+			roomTr = new RoomTransition(8, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+
+			createdRoom = new Room(6, RoomType.OUTDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 7 ---
+
+			roomTr = new RoomTransition(19, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.WEST, roomTr);
+			roomTr = new RoomTransition(6, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+
+			createdRoom = new Room(7, RoomType.OUTDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 8 ---
+
+			roomTr = new RoomTransition(9, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(6, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.WEST, roomTr);
+
+			createdRoom = new Room(8, RoomType.OUTDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "rabbitHunt");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 9 ---
+
+			roomTr = new RoomTransition(10, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.NORTH, roomTr);
+			roomTr = new RoomTransition(16, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(9, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.WEST, roomTr);
+
+			//--- Room 10 ---
+
+			roomTr = new RoomTransition(11, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.NORTH, roomTr);
+			roomTr = new RoomTransition(9, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+
+			createdRoom = new Room(10, RoomType.OUTDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
+			//--- Room 11 ---
+
+			roomTr = new RoomTransition(12, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.EAST, roomTr);
+			roomTr = new RoomTransition(10, null, new File("src/main/resources/doorOpen_2.ogg"));
+			adiacentRooms.put(Direction.SOUTH, roomTr);
+
+			createdRoom = new Room(11, RoomType.OUTDOOR, LightStatus.ILLUMINATO, roomContainers,
+					item, adiacentRooms, "");
+			oos.writeObject(createdRoom);
+			clear();
+
 			oos.close();
 			generateIndexes();
 		}
@@ -117,6 +224,13 @@ public class RoomBuilder {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void clear() {
+		roomContainers = new ArrayList();
+		adiacentRooms = new HashMap<>();
+		item = new ArrayList<>();
+		containerContent = new ArrayList<>();
 	}
 
 }

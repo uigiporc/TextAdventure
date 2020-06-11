@@ -2,27 +2,77 @@ package map;
 
 import items.Item;
 import util.Command;
+import util.RoomContainersState;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class RoomContainer implements Serializable {
-    protected Item content;
-    protected boolean open;
+    private static final long serialVersionUID = -5028607639889514468L;
+    protected ArrayList<Item> content;
+    protected RoomContainersState state;
+    transient protected static ResourceBundle nameBundle = null;
 
-    public void open(Map items){
-        open = true;
-        items.put(Command.GET, content);
+    public void open(ArrayList items){
+        state = RoomContainersState.OPEN;
+        items.addAll(content);
     }
 
-    public void getContent(ArrayList items) {
-        open = false;
-        items.remove(content);
+    public void close(ArrayList items){
+        state = RoomContainersState.CLOSED;
+        for(int i = 0; i < content.size(); i++) {
+            if (!items.contains(content.get(i))){
+                content.remove(i);
+            }
+        }
+        items.removeAll(content);
+    }
+    public static RoomContainer getContainer(String inputContainer) {
+        ResourceBundle bundle = ResourceBundle.getBundle("bundles/RoomContainersNames");
+        try {
+            for(String searchingString : bundle.keySet()){
+                if(bundle.getString(searchingString).equalsIgnoreCase(inputContainer)) {
+
+                    Class<?> foundClass = Class.forName(RoomContainer.class.getPackageName()+ "." + searchingString);
+                    return (RoomContainer) foundClass.getConstructor().newInstance();
+                }
+            }
+            return null;		//Item not found.
+        }
+        catch(Exception ex) {
+            //Item not found.
+            return null;
+        }
     }
 
-    void close(){
+    public static boolean isContainer(String inputContainer) {
+        ResourceBundle bundle = ResourceBundle.getBundle("bundles/RoomContainersNames");
+        try {
+            for(String searchingString : bundle.keySet()){
+                if(bundle.getString(searchingString).equalsIgnoreCase(inputContainer)) {
+                    return true;
+                }
+            }
+            return false;		//Not a container.
+        } catch(Exception ex) {
+            //Not a container.
+            return false;
+        }
+    }
 
+    public boolean equals(RoomContainer comparedItem) {
+        return this.getClass().equals(comparedItem.getClass());
+    }
+
+    public String getName() {
+        return nameBundle.getString(this.getClass().getSimpleName());
+    }
+
+    public static void setNameBundle(Locale currentLocale) {
+        nameBundle = ResourceBundle.getBundle("bundles.RoomContainersNames", currentLocale);
+    }
+
+    public RoomContainersState getState() {
+        return state;
     }
 }

@@ -12,12 +12,13 @@ import java.util.Set;
 import items.*;
 
 import engine.GameProgress;
+import map.RoomContainer;
 
-public abstract class Item extends Thread implements Serializable{
+public abstract class Item extends Thread implements Serializable {
 
+	private static final long serialVersionUID = -8481482740902320036L;
 	transient protected static ResourceBundle nameBundle = null;
 	transient protected static ResourceBundle descriptionBundle = null;
-	transient protected static boolean reusable;
 
 	public String getItemName() {
 		return nameBundle.getString(this.getClass().getSimpleName());

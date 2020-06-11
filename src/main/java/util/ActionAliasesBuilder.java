@@ -69,9 +69,18 @@ public class ActionAliasesBuilder {
 			aliasesIT.put(BAG_IT, Command.BAG);
 			String[] BAG_EN = {"bag", "inventory"};
 			aliasesEN.put(BAG_EN, Command.BAG);
-			String[] OBSERVE_IT = {"osserva", "analizza", "guarda"};
+			String[] OBSERVE_IT = {"osserva", "analizza", "guarda", "esamina"};
 			aliasesIT.put(OBSERVE_IT, Command.OBSERVE);
-			String[] OBSERVE_EN = {"observe", "analyze", "look"};
+			String[] OBSERVE_EN = {"observe", "analyze", "look", "examine"};
+			aliasesEN.put(OBSERVE_EN, Command.OBSERVE);
+			String[] OPEN_IT = {"apri"};
+			aliasesIT.put(OPEN_IT, Command.OPEN);
+			String[] OPEN_EN = {"open"};
+			aliasesEN.put(OPEN_EN, Command.OPEN);
+			String[] CLOSE_IT = {"chiudi"};
+			aliasesIT.put(CLOSE_IT, Command.CLOSE);
+			String[] CLOSE_EN = {"close"};
+			aliasesEN.put(CLOSE_EN, Command.CLOSE);
 
 			it.writeObject(aliasesIT);
 			en.writeObject(aliasesEN);

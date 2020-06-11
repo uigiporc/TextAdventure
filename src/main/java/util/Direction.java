@@ -13,9 +13,9 @@ public enum Direction {
 	WEST,
 	UP,
 	DOWN;
-	
+
 	private static Map<String[], Direction> directionAliases;
-	
+
 	public static boolean isDirection(String checkDirection) {
 		try {
 			for(String[] searchingStringArray : directionAliases.keySet()){
@@ -24,7 +24,7 @@ public enum Direction {
 						return true;
 					}
 				}
-				
+
 			}
 			return false;
 		}
@@ -32,7 +32,7 @@ public enum Direction {
 			return false;
 		}
 	}
-	
+
 	public static Direction getDirection(String checkDirection) {
 		try {
 			for(String[] searchingStringArray : directionAliases.keySet()){
@@ -41,7 +41,7 @@ public enum Direction {
 						return directionAliases.get(searchingStringArray);
 					}
 				}
-				
+
 			}
 			return null;
 		}
@@ -49,7 +49,7 @@ public enum Direction {
 			return null;
 		}
 	}
-	
+
 	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
 		String directionAliasesFilePath = resourceFolderPath + "/DirectionAliases_" + currentLocale.getLanguage() + ".properties";
 		directionAliases = ResourceHandler.<Direction>load(directionAliasesFilePath);

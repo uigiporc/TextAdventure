@@ -1,8 +1,13 @@
 package engine;
 
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import java.text.NumberFormat;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StringPrinter extends Thread {
+
+
 
     /*private static final Thread stringPrinting = new Thread (new Runnable() {
         @Override
@@ -41,14 +46,14 @@ public class StringPrinter extends Thread {
     public static void printString(String string) {
         //stringsQueue.add(string);
         for (int i = 0; i < string.length(); i++) {
-            System.out.print(string.charAt(i));
             try {
                 sleep(15);
             } catch (InterruptedException e) {
                 return;
             }
         }
-        System.out.println();
         //stringPrinting.notify();
     }
+
+
 }

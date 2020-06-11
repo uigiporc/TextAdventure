@@ -5,18 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
+import java.util.*;
 
 import items.Item;
+import map.MapLoader;
 import map.Room;
+import map.RoomContainer;
 import util.Command;
 import util.Direction;
 
 public abstract class ResourceHandler {
+	static {
+		MapLoader.loadMap();
+	}
 
 	public static void loadResources() {
 		String resourceFolderPath = "src/main/java/bundles";
@@ -29,18 +30,19 @@ public abstract class ResourceHandler {
 			Item.setDescriptionBundle(currentLocale);
 			Item.setNameBundle(currentLocale);
 
-			//Load room descriptions and help strings
+			//Load room descriptions string
 			Room.setRoomDescriptionBundle(currentLocale);
-			Room.setRoomHelpBundle(currentLocale);
 
 			//Load Commands and Directions aliases.
-
 			Command.initAliases(resourceFolderPath, currentLocale);
 			Direction.initAliases(resourceFolderPath, currentLocale);
+
+			RoomContainer.setNameBundle(currentLocale);
+			RoomEvent.setEventText(currentLocale);
 		}catch(FileNotFoundException |MissingResourceException ex) {
 			ex.printStackTrace();
 		}
-		GameProgress.clock.start();
+		//GameProgress.clock.start();
 	}
 
 	public static <T> Map<String[], T> load(String filePath) throws FileNotFoundException{

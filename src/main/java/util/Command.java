@@ -22,6 +22,8 @@ public enum Command {
     PUNCH,
     GO,
     BAG,
+	OPEN,
+	CLOSE,
     OBSERVE;
 
 	private static Map<String[], Command> commandAliases;

@@ -1,5 +1,7 @@
 package items;
 
+import java.util.ResourceBundle;
+
 public class ItemNotFoundException extends Exception {
     
     /**
@@ -9,7 +11,6 @@ public class ItemNotFoundException extends Exception {
 
     @Override
     public String getMessage() {
-	return "Strumento non trovato nell'invetario.";
+        return ResourceBundle.getBundle("bundles/ExceptionMessageBundle").getString(this.getClass().getSimpleName());
     }
-
 }

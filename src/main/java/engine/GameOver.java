@@ -1,8 +1,9 @@
 package engine;
 
+import gui.UIHandler;
+
 public class GameOver {
 	{
-		System.out.println("Sei morto.");
-		System.exit(0);
+		UIHandler.printInFrame("Sei morto.");
 	}
 }
