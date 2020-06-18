@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.0.298" Java: "11.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.2.3.303" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	"i18n.bundlePackage": "bundles"
@@ -7,7 +7,7 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::586:x, seq {comp commandTextField:::::x, space :::p, comp sendButton:::p::p, space :p:12:p}}, space :::p}}"
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1:::::x, seq {comp commandTextField:::::x, space :::p, comp sendButton:::p::p, space :p:12:p}}, space :::p}}"
 			"$verticalGroup": "par l {seq t {space :::p, comp scrollPane1::::273:x, space u:::p, par l {comp commandTextField:::p::p, comp sendButton::l:p::p}, space :p:20:p}}"
 		} ) {
 			name: "UIFrame"
@@ -17,6 +17,7 @@ new FormModel {
 			"$sizePolicy": 1
 			"minimumSize": new java.awt.Dimension( 600, 400 )
 			"defaultCloseOperation": 0
+			"iconImage": new com.jformdesigner.model.SwingIcon( 1, "C:\\Users\\porce\\Documents\\adventure\\src\\main\\resources\\pointy-hat.png" )
 			auxiliary() {
 				"JavaCodeGenerator.variableName": "JFrame"
 			}

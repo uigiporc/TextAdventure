@@ -5,5 +5,5 @@ public enum RoomType {
 	INDOOR,
 	OUTDOOR,
 	CAVE,
-	ENEMY_ROOM;
+	ENEMY_ROOM
 }

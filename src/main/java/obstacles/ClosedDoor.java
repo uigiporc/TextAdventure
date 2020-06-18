@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 public class ClosedDoor extends Obstacle {
 
 	private static final long serialVersionUID = 2394726890544852907L;
-	private Item unlockItem;
+	private final Item unlockItem;
 
 	@Override
 	public boolean isPassed() {
@@ -23,10 +23,6 @@ public class ClosedDoor extends Obstacle {
 			passed = true;
 		}
 		return this.isPassed();
-	}
-
-	public static void helpObstacle() {
-		//Print a short string about unlocking this sht
 	}
 
 	public ClosedDoor(Item unlock) {

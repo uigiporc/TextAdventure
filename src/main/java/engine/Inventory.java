@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class Inventory implements Serializable {
-	private static Inventory inventory = new Inventory();
+	private static final Inventory inventory = new Inventory();
 	private ArrayList<Item> bag;
 	private static final short bagMaxItems = 3;
 
@@ -45,12 +45,8 @@ public class Inventory implements Serializable {
 		return null;
 	}
 
-	public void useItem(String itemToUseName) {
-		for(int i = 0; i < bag.size(); i++) {
-			if(bag.get(i).equals(itemToUseName)) {
-				bag.get(i).use();
-			}
-		}
+	public void useItem(String itemToUseName) throws ItemNotFoundException {
+		getFromBag(itemToUseName).use();
 	}
 
 	public void print(){
@@ -61,7 +57,6 @@ public class Inventory implements Serializable {
 			UIHandler.printInFrame(ResourceBundle.getBundle("bundles/engineOutText").getString("bagContent") + ":\n");
 			for(int i = 0; i < bag.size(); i++){
 				UIHandler.printInFrame(i+1 + ". " + bag.get(i).getItemName() + "\n");
-				//UIHandler.printInFrame(bag.get(i).getDescription() + "\n");
 			}
 		}
 	}

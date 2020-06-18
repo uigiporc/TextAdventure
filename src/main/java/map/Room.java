@@ -5,16 +5,18 @@
 package map;
 
 /*
- * Maps areaItems and adiacentAreas should have a specific behavior for when we need a specific
+ * Maps areaItems and adjacentAreas should have a specific behavior for when we need a specific
  * item and a specific action (eg. "USE SWORD"). Maybe I could pass the object as a parameter
  * and use it as a KEY in those maps; another solution is to pass a string (eg the string "USE SWORD")
  * after having done the necessary actions.
  * areaItems could be pair<?,?>, where one of the parameters can be missing.
  */
 
-import engine.RoomEvent;
+import engine.GameProgress;
+import engine.MapLoader;
+import engine.GameEvent;
 import obstacles.IllegalItemUsageException;
-import obstacles.ObstacledRoomException;
+import obstacles.HinderedRoomException;
 import util.*;
 
 import java.io.Serializable;
@@ -25,13 +27,12 @@ import items.*;
 public class Room implements Serializable {
 
 	private static final long serialVersionUID = 2512059451189906531L;
-	private Integer ID;
-	private RoomType setting;
+	private final Integer ID;
 	transient private static ResourceBundle roomDescriptionBundle = null;
-	private LightStatus illumination;
-	private ArrayList<RoomContainer> roomContainers;
+	private final LightStatus illumination;
+	private final ArrayList<RoomContainer> roomContainers;
 	private ArrayList<Item> roomItems = new ArrayList<Item>();
-	private Map<Direction, RoomTransition> adiacentRooms = new HashMap<Direction, RoomTransition>();
+	private Map<Direction, RoomTransition> adjacentRooms = new HashMap<Direction, RoomTransition>();
 	private String stepOnEvent;
 
 	public String getAreaDescription() {
@@ -41,11 +42,9 @@ public class Room implements Serializable {
 
 
 	public Item getItemInArea(String itemName) throws IllegalActionException{
-		roomItems.contains(itemName);
 		for(Item checkedItem : roomItems) {
 			if(checkedItem.equals(itemName)) {
 				roomItems.remove(checkedItem);
-				//roomItems.replace(command, roomItems.get(command), roomItems.get(command).remove(checkedItem));
 				return checkedItem;
 			}
 		}
@@ -61,47 +60,37 @@ public class Room implements Serializable {
 	}
 
 	public boolean isIlluminated() {
-		if(illumination == LightStatus.BUIO) {
-			return false;
-		}
-		else {
-			return true;
-		}
+		return illumination == LightStatus.BRIGHT;
 
-	}
-
-	protected RoomType getSetting() {
-		return setting;
 	}
 
 	public static void setRoomDescriptionBundle(Locale currentLocale) {
 		roomDescriptionBundle = ResourceBundle.getBundle("bundles.RoomDescriptions");
 	}
 
-	public Room(int newID, RoomType newSetting, LightStatus newIllumination,
-				ArrayList newRoomContainers, ArrayList newRoomItems, Map newAdiacentRooms, String event) {		//should be protected
+	public Room(int newID, LightStatus newIllumination,
+				ArrayList newRoomContainers, ArrayList newRoomItems, Map newadjacentRooms, String event) {		//should be protected
 
 		this.ID = newID;
-		this.setting = newSetting;
 		this.illumination = newIllumination;
 		this.roomContainers = newRoomContainers;
 		this.roomItems = newRoomItems;
-		this.adiacentRooms = newAdiacentRooms;
+		this.adjacentRooms = newadjacentRooms;
 		this.stepOnEvent = event;
 	}
 
-	public boolean doesItUnlock(Item item) throws IllegalItemUsageException {
-		for(Direction tempDirection : adiacentRooms.keySet()){
-			if(adiacentRooms.get(tempDirection).useItemToUnlock(item)){
-				return true;
+	public void doesItUnlock(Item item) throws IllegalItemUsageException {
+		for(Direction tempDirection : adjacentRooms.keySet()){
+			if(adjacentRooms.get(tempDirection).useItemToUnlock(item)){
+				return;
 			}
 		}
 		throw new IllegalItemUsageException();
 	}
 
-	public Room move(Direction direction) throws IllegalMovementException, ObstacledRoomException{
+	public Room move(Direction direction) throws IllegalMovementException, HinderedRoomException {
 		try{
-			int movingRoomId = adiacentRooms.get(direction).moveToRoom();
+			int movingRoomId = adjacentRooms.get(direction).moveToRoom();
 			return MapLoader.getRoom(movingRoomId);
 		} catch (NullPointerException e) {
 			throw new IllegalMovementException();
@@ -118,33 +107,36 @@ public class Room implements Serializable {
 	}
 
 	public String roomInformations() {
-		if(!this.isIlluminated()) {
+		if (!this.isIlluminated() && !GameProgress.isPlayerIlluminated()) {
 			return ResourceBundle.getBundle("bundles/engineOutText").getString("noLight");
-		}
-		String info = "";
-		info = info + this.getAreaDescription();
-		info = info + ResourceBundle.getBundle("bundles/engineOutText").getString("directions") + ":";
-		for (Direction direction : adiacentRooms.keySet()) {
-			info = info + " " + direction.toString() + " -";
-		}
-		info = info + "\n";
-		info = info + (ResourceBundle.getBundle("bundles/engineOutText").getString("content")) + (":");
-		if(this.roomItems.size() > 0) {
-			for (int i = 0; i < roomItems.size(); i++) {
-				info = info + (" " + roomItems.get(i).getItemName() + " -");
+		} else {
+			StringBuilder info = new StringBuilder();
+			info.append(this.getAreaDescription());
+			info.append(ResourceBundle.getBundle("bundles/engineOutText").getString("directions") + ":");
+			for (Direction direction : adjacentRooms.keySet()) {
+				info.append(" " + direction.toString() + " -");
 			}
-		}
-		if (this.roomContainers.size() > 0) {
-			for (int i = 0; i < roomContainers.size(); i++) {
-				info = info + " " +  roomContainers.get(i).getName()
-						+ "(" + roomContainers.get(i).getState() + ")" + " -";
+			info.append("\n");
+			info.append(ResourceBundle.getBundle("bundles/engineOutText").getString("content") + ":");
+			if(this.roomItems.size() > 0) {
+				for (int i = 0; i < roomItems.size(); i++) {
+					info.append(" " + roomItems.get(i).getItemName() + " -");
+				}
 			}
+			if (this.roomContainers.size() > 0) {
+				for (int i = 0; i < roomContainers.size(); i++) {
+					info.append(" " +  roomContainers.get(i).getName()
+							+ "(" + roomContainers.get(i).getState() + ")" + " -");
+				}
+			}
+			return info.toString();
 		}
-		return info;
+
+
 	}
 
 	public void startEvent() {
-		if (RoomEvent.startEvent(stepOnEvent)) {
+		if (GameEvent.startEvent(stepOnEvent)) {
 			stepOnEvent = "";
 		}
 	}
@@ -157,9 +149,13 @@ public class Room implements Serializable {
 		}
     }
 
-    public String directionInformation(Direction direction) {
+	public Integer getID() {
+		return ID;
+	}
+
+	public String directionInformation(Direction direction) {
 	    try{
-	        return adiacentRooms.get(direction).info();
+	        return adjacentRooms.get(direction).info();
         } catch (NullPointerException e) {
 			return ResourceBundle.getBundle("bundles/engineOutText").getString("noDirection");
 		}
@@ -176,5 +172,9 @@ public class Room implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(ID);
+	}
+
+	public Set getAdjacentDirections() {
+		return adjacentRooms.keySet();
 	}
 }

@@ -1,13 +1,10 @@
 package map;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ResourceBundle;
-
-import gui.UIHandler;
 import items.Item;
 import obstacles.Obstacle;
-import obstacles.ObstacledRoomException;
+import obstacles.HinderedRoomException;
 
 public class RoomTransition implements Serializable{
 
@@ -15,15 +12,14 @@ public class RoomTransition implements Serializable{
 
 	private final int transitioningRoomId;
 	private final Obstacle transitionObstacle;
-	transient private File transitionSound;
 
-	public int moveToRoom() throws ObstacledRoomException {
+	public int moveToRoom() throws HinderedRoomException {
 		if(transitionObstacle == null || transitionObstacle.isObstaclePassed()) {
 			return transitioningRoomId;
 		} else {
 			//If there isn't an obstacle, this branch will never activate. So, this branch is activeted only when
 			//the obstacle isn't passed.
-			throw new ObstacledRoomException();
+			throw new HinderedRoomException();
 		}
 
 	}
@@ -36,15 +32,14 @@ public class RoomTransition implements Serializable{
 		}
 	}
 
-	public RoomTransition(int ID, Obstacle obstacle, File sound){
+	public RoomTransition(int ID, Obstacle obstacle){
 		this.transitioningRoomId = ID;
 		this.transitionObstacle = obstacle;
-		this.transitionSound = sound;
 	}
 
 	public String info() {
 		if(transitionObstacle != null && !transitionObstacle.isPassed()) {
-			return ResourceBundle.getBundle("bundles/engineOutText").getString("obstacledPath") + ":" +
+			return ResourceBundle.getBundle("bundles/engineOutText").getString("hinderedPath") + ":" +
 					ResourceBundle.getBundle("bundles/ObstaclesNames")
 							.getString(transitionObstacle.getClass().getSimpleName());
 		} else {

@@ -2,7 +2,7 @@ package obstacles;
 
 import java.util.ResourceBundle;
 
-public class ObstacledRoomException extends Exception {
+public class HinderedRoomException extends Exception {
 
     @Override
     public String getMessage() {

@@ -1,7 +1,6 @@
 package map;
 
 import items.Item;
-import util.Command;
 import util.RoomContainersState;
 
 import java.io.Serializable;
@@ -13,15 +12,16 @@ public abstract class RoomContainer implements Serializable {
     protected RoomContainersState state;
     transient protected static ResourceBundle nameBundle = null;
 
-    public void open(ArrayList items){
+    public void open(ArrayList<Item> items){
         state = RoomContainersState.OPEN;
         items.addAll(content);
     }
 
-    public void close(ArrayList items){
+    public void close(ArrayList<Item> items){
         state = RoomContainersState.CLOSED;
         for(int i = 0; i < content.size(); i++) {
             if (!items.contains(content.get(i))){
+                //noinspection SuspiciousListRemoveInLoop
                 content.remove(i);
             }
         }

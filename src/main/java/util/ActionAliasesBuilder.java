@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class ActionAliasesBuilder {
@@ -28,9 +29,9 @@ public class ActionAliasesBuilder {
 		File enFile = null;
 
 		try {
-			itFile = new File("src/main/java/bundles/CommandAliases_it.properties");
+			itFile = new File("src/main/resources/bin/CommandAliases_it.dat");
 			itFile.createNewFile();
-			enFile = new File("src/main/java/bundles/CommandAliases_en.properties");
+			enFile = new File("src/main/resources/bin/CommandAliases_en.dat");
 			enFile.createNewFile();
 			it = new ObjectOutputStream(new FileOutputStream(itFile));
 			en = new ObjectOutputStream(new FileOutputStream(enFile));
@@ -88,43 +89,12 @@ public class ActionAliasesBuilder {
 			System.out.println("diocane");
 		} finally {
 			try {
-				it.close();
-				en.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void load() {
-		ObjectInputStream oos = null;
-		Map<String[], Command> aliases;
-		File aliasFile = null;
-
-		try {
-			aliasFile = new File("src/main/java/util/ActionsAliases_" + Locale.getDefault().getLanguage() + ".properties");
-			oos = new ObjectInputStream(new FileInputStream(aliasFile));
-			aliases = new HashMap<String[], Command>();
-			aliases = (HashMap<String[], Command>) oos.readObject();
-			for(String[] string : aliases.keySet()) {
-				for(String printme : string) {
-					System.out.println(printme);
-				}
-
-			}
-		} catch (FileNotFoundException e) {
-			//FATAL ERROR: It means that you can't use commands, which is absurd.
-		} catch (IOException e) {
-
-		} catch (ClassNotFoundException e) {
-			//We are absolutely sure that the class IS actually found.
-		} finally {
-			try {
-				oos.close();
+				Objects.requireNonNull(it).close();
+				Objects.requireNonNull(en).close();
 			} catch (IOException e) {
 
 			}
 		}
 	}
+
 }

@@ -1,18 +1,11 @@
 package items;
 
 import java.io.Serializable;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.lang.Thread;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.Set;
-import items.*;
 
-import engine.GameProgress;
-import map.RoomContainer;
+import items.*;
 
 public abstract class Item extends Thread implements Serializable {
 
@@ -77,17 +70,3 @@ public abstract class Item extends Thread implements Serializable {
 		descriptionBundle = ResourceBundle.getBundle("bundles.ItemDescriptions", currentLocale);
 	}
 }
-
-/*TODO:
- *Vasetto vuoto
- *Chiave vecchia
- *Graffetta
- *Spada
- *Bomba
- *Torcia
- *Fiaccola
- *Pala
- *Acqua
- *
- *
-*/

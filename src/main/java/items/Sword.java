@@ -1,12 +1,10 @@
 package items;
 
+import engine.GameEvent;
+
 public class Sword extends Item {
-	public void Sword(){
-		/*nameEN = "Sword";
-		descriptionEN = "This is a sword.";*/
-	}
 	
 	public void use() {
-		
+		GameEvent.startEvent("useSword");
 	}
 }

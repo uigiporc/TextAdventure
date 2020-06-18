@@ -1,10 +1,9 @@
 package items;
 
-import engine.GameOver;
 import engine.GameProgress;
-import engine.Inventory;
 import gui.UIHandler;
 import map.Room;
+import obstacles.IllegalItemUsageException;
 
 import java.util.ResourceBundle;
 
@@ -25,11 +24,17 @@ public class Bomb extends Item {
 			Thread.sleep(8000);
 			UIHandler.printInFrame("BOOM\n");
 			if (roomWithBomb.equals(GameProgress.getCurrentRoom())) {
-				new GameOver();
+				GameProgress.gameOver();
+			} else {
+				roomWithBomb.doesItUnlock(this);
 			}
-			GameProgress.getBag().removeFromBag(this.getItemName());
+
 		} catch (InterruptedException e) {
 			//This thread should never be interrupted.
+		} catch (IllegalItemUsageException e) {
+			//Nothing happens.
+		} finally {
+			GameProgress.getBag().removeFromBag(this.getItemName());
 		}
 	}
 }

@@ -1,8 +1,5 @@
 package engine;
 
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import java.text.NumberFormat;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StringPrinter extends Thread {

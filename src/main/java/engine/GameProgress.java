@@ -1,30 +1,20 @@
 package engine;
 
-import java.sql.Time;
-import java.util.BitSet;
-import java.util.Locale;
-
-import com.sun.jdi.ObjectCollectedException;
-import gui.UIFrame;
 import gui.UIHandler;
 import items.Item;
 import map.*;
 import obstacles.IllegalItemUsageException;
-import obstacles.ObstacledRoomException;
+import obstacles.HinderedRoomException;
 import util.Direction;
 import util.LightStatus;
-
-import javax.swing.text.Document;
 
 /**
  * GameProgress is a class containing the current game progress.
  */
-public class GameProgress extends Thread{
+public class GameProgress {
 
-	protected static long totalGameTime;
 	private static Room currentRoom;
 	private static LightStatus playerLight = null;
-	private static Thread clock = new Thread();
 	private static Inventory bag;
 
 	public static Room getCurrentRoom() {
@@ -39,44 +29,45 @@ public class GameProgress extends Thread{
 		playerLight = null;
 	}
 
-	public static LightStatus getPlayerLight() {
-		return playerLight;
+	public static boolean isPlayerIlluminated() {
+		return playerLight == LightStatus.BRIGHT;
 	}
 
-	public static void moveRoom(Direction direction) throws IllegalMovementException, ObstacledRoomException {
+	public static void moveRoom(Direction direction) throws IllegalMovementException, HinderedRoomException {
 		currentRoom = currentRoom.move(direction);
+		currentRoom.startEvent();
+		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
+	}
+
+	public static void setCurrentRoom(Room currentRoom) {
+		GameProgress.currentRoom = currentRoom;
 	}
 
 	public static void dropItem(Item droppedItem){
 		currentRoom.dropItem(droppedItem);
 	}
 
-	@Override
-	public void run(){
-		Long startGameSession =  System.nanoTime();
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			totalGameTime += System.nanoTime() - startGameSession;
-
-		}
-	}
-
 	public static void newGame(){
-		totalGameTime = 0;
+		UIHandler.cleanScreen();
 		currentRoom = MapLoader.getRoom(0);
+		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
 		bag = Inventory.getInventory();
-		new Thread(clock).start();
-	}
-
-	public static void getItem() {
-
 	}
 
 	public static Inventory getBag() {
 		return bag;
 	}
+
+	static void setBag(Inventory newBag) {
+		bag = newBag;
+	}
+
 	public static void unlockObstacle(Item item) throws IllegalItemUsageException {
 		currentRoom.doesItUnlock(item);
+	}
+
+	public static void gameOver() {
+		UIHandler.disableInput();
+		UIHandler.disableSave();
 	}
 }

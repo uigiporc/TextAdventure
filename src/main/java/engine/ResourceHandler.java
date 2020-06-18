@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.util.*;
 
 import items.Item;
-import map.MapLoader;
 import map.Room;
 import map.RoomContainer;
 import util.Command;
@@ -16,11 +15,11 @@ import util.Direction;
 
 public abstract class ResourceHandler {
 	static {
-		MapLoader.loadMap();
+		MapLoader.loadMap(new File("src/main/resources/bin/intotheunknown.dat"), 0);
 	}
 
 	public static void loadResources() {
-		String resourceFolderPath = "src/main/java/bundles";
+		String resourceFolderPath = "src/main/resources/bin/";
 		try {
 			//Get current JVM locale to initialize resources
 			Locale currentLocale;
@@ -38,9 +37,9 @@ public abstract class ResourceHandler {
 			Direction.initAliases(resourceFolderPath, currentLocale);
 
 			RoomContainer.setNameBundle(currentLocale);
-			RoomEvent.setEventText(currentLocale);
+			GameEvent.setEventText(currentLocale);
 		}catch(FileNotFoundException |MissingResourceException ex) {
-			ex.printStackTrace();
+			System.out.println("lol");
 		}
 		//GameProgress.clock.start();
 	}
@@ -57,14 +56,17 @@ public abstract class ResourceHandler {
 			return loadingMap;
 
 		} catch (FileNotFoundException e) {
+			System.out.println("lol");
 			throw new FileNotFoundException();
 		} catch (IOException e) {
+			System.out.println("lol");
 			//FATAL
 		} catch (ClassNotFoundException e) {
+			System.out.println("lol");
 			//We are absolutely sure that the class IS actually found.
 		} finally {
 			try {
-				aliasesStream.close();
+				Objects.requireNonNull(aliasesStream).close();
 			} catch (Exception e) {
 
 			}

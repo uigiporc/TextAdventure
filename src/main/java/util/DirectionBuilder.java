@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import util.Direction;
 
 public class DirectionBuilder {
 	
 	public static void main(String[] args) {
-		Map<String[], Direction> en = new HashMap<String[], Direction>();
-		Map<String[], Direction> it = new HashMap<String[], Direction>();
+		Map<String[], Direction> en = new HashMap<>();
+		Map<String[], Direction> it = new HashMap<>();
 		File enFile = new File("src/main/java/util/DirectionAlias_en.properties"); 
 		File itFile = new File("src/main/java/util/DirectionAlias_it.properties"); 
 		String[] itEAST = {"Destra", "Est"};
@@ -37,8 +36,7 @@ public class DirectionBuilder {
 			oosEN.writeObject(en);
 			oosIT.writeObject(it);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//fatal
 		}
 	}
 }

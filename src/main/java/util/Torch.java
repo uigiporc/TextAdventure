@@ -1,10 +1,8 @@
 package util;
 
-import engine.Inventory;
 import gui.UIHandler;
 import items.Item;
 import engine.GameProgress;
-import items.ItemNotFoundException;
 
 import java.util.ResourceBundle;
 
@@ -19,10 +17,10 @@ public class Torch extends Item{
 
 	@Override
 	public void run() {
-		GameProgress.setPlayerLight(LightStatus.ILLUMINATO);
+		GameProgress.setPlayerLight(LightStatus.BRIGHT);
 		UIHandler.printInFrame(ResourceBundle.getBundle("bundles/itemsUsage").getString("torchOn"));
 		try {
-			Thread.sleep(5_000);
+			Thread.sleep(60_000);
 		} catch (InterruptedException e) {
 			//If the thread is interrupted, we just go ahead and set the light back to normal.
 		} finally {

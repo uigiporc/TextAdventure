@@ -1,9 +1,6 @@
 package items;
 
-public class SupremeKey extends Item {
+public class SupremeKey extends Key {
 
-    @Override
-    public void use() {
-
-    }
+    private static final long serialVersionUID = 5576172885813106635L;
 }

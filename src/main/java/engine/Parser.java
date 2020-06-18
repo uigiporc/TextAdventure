@@ -5,11 +5,9 @@ import java.util.regex.Pattern;
 import gui.UIHandler;
 import items.Item;
 import items.ItemNotFoundException;
-import items.Sword;
 import map.IllegalMovementException;
-import map.Room;
 import map.RoomContainer;
-import obstacles.ObstacledRoomException;
+import obstacles.HinderedRoomException;
 import util.Command;
 import util.Direction;
 import util.IllegalActionException;
@@ -19,16 +17,15 @@ import java.util.regex.Matcher;
 //group(0) = tutta la stringa; group(1) = azione; group(4) = oggetto/direzione
 public class Parser {
 
-	private static final String REGEX = "^([A-Z]{2,})((\\s[A-Z]{0,3})?(\\s[A-Z]{3,}))?(\\s[A-Z]{3,}){0,}$";
-	private static Pattern regexPattern;
-	private static Matcher regexMatcher;
+	private static final String REGEX = "^([A-Z]{2,})((\\s[A-Z]{0,3})?(\\s[A-Z]{3,}))?(\\s[A-Z]{3,})*$";
+	private static final Pattern regexPattern;
 
-	static {
+    static {
 		regexPattern = Pattern.compile(REGEX);
 	}
 
 	public static void parseCommand(String inputCommand) {
-		regexMatcher = regexPattern.matcher(inputCommand.toUpperCase().trim());
+        Matcher regexMatcher = regexPattern.matcher(inputCommand.toUpperCase().trim());
 		Command commandToParse = null;
 		String subjectToParse = null;
 		try {
@@ -61,12 +58,12 @@ public class Parser {
 			} else if (!inputCommand.equals("")){
 				throw new IllegalCommandException();
 			}
-		} catch (IllegalActionException | ItemNotFoundException | IllegalMovementException | IllegalCommandException | ObstacledRoomException e) {
+		} catch (IllegalActionException | ItemNotFoundException | IllegalMovementException | IllegalCommandException | HinderedRoomException e) {
 			UIHandler.printInFrame(e.getMessage() + "\n");
 		}
 	}
 
-	private static void handleCommandAndSubject(Command userCommand, String inputSubject) throws IllegalActionException, ItemNotFoundException, IllegalMovementException, IllegalCommandException, ObstacledRoomException {
+	private static void handleCommandAndSubject(Command userCommand, String inputSubject) throws IllegalActionException, ItemNotFoundException, IllegalMovementException, IllegalCommandException, HinderedRoomException {
 		if(inputSubject == null){
 			switch (userCommand){
 				case BAG: {
@@ -83,7 +80,6 @@ public class Parser {
 			}
 		}
 		if(Item.isItem(inputSubject)) {
-			System.out.println("did it");
 			switch(userCommand) {
 				case USE: {
 					GameProgress.getBag().useItem(inputSubject);
@@ -136,6 +132,8 @@ public class Parser {
 					throw new IllegalActionException();
 				}
 			}
+		} else {
+			throw new IllegalCommandException();
 		}
 	}
 }

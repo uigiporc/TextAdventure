@@ -1,7 +1,6 @@
 package util;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import engine.ResourceHandler;
@@ -51,7 +50,30 @@ public enum Direction {
 	}
 
 	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
-		String directionAliasesFilePath = resourceFolderPath + "/DirectionAliases_" + currentLocale.getLanguage() + ".properties";
+		String directionAliasesFilePath = resourceFolderPath + "DirectionAliases_" + currentLocale.getLanguage() + ".dat";
 		directionAliases = ResourceHandler.<Direction>load(directionAliasesFilePath);
+	}
+
+	public static Direction getOppositeDirection(Direction direction) {
+		switch (direction) {
+			case EAST: {
+				return WEST;
+			}
+			case WEST: {
+				return EAST;
+			}
+			case NORTH: {
+				return SOUTH;
+			}
+			case SOUTH: {
+				return NORTH;
+			}
+			case UP: {
+				return DOWN;
+			}
+			default: {
+				return UP;
+			}
+		}
 	}
 }
