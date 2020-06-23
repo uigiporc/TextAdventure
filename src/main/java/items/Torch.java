@@ -1,8 +1,9 @@
-package util;
+package items;
 
+import engine.Inventory;
 import gui.UIHandler;
-import items.Item;
 import engine.GameProgress;
+import util.LightStatus;
 
 import java.util.ResourceBundle;
 
@@ -20,13 +21,14 @@ public class Torch extends Item{
 		GameProgress.setPlayerLight(LightStatus.BRIGHT);
 		UIHandler.printInFrame(ResourceBundle.getBundle("bundles/itemsUsage").getString("torchOn"));
 		try {
-			Thread.sleep(60_000);
+			Thread.sleep(180_000);
 		} catch (InterruptedException e) {
-			//If the thread is interrupted, we just go ahead and set the light back to normal.
+			//If the thread is interrupted, we act like if the torch ran out, entering the finally block.
+			Thread.currentThread().interrupt();
 		} finally {
 			UIHandler.printInFrame(ResourceBundle.getBundle("bundles/itemsUsage").getString("torchOff"));
 			GameProgress.resetPlayerLight();
-			GameProgress.getBag().removeFromBag(this.getItemName());
+			Inventory.getInventory().removeFromBag(this.getItemName());
 		}
 	}
 }

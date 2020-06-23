@@ -24,7 +24,7 @@ public class Parser {
 		regexPattern = Pattern.compile(REGEX);
 	}
 
-	public static void parseCommand(String inputCommand) {
+	public static void parseCommand(String inputCommand) throws Exception{
         Matcher regexMatcher = regexPattern.matcher(inputCommand.toUpperCase().trim());
 		Command commandToParse = null;
 		String subjectToParse = null;
@@ -58,16 +58,20 @@ public class Parser {
 			} else if (!inputCommand.equals("")){
 				throw new IllegalCommandException();
 			}
-		} catch (IllegalActionException | ItemNotFoundException | IllegalMovementException | IllegalCommandException | HinderedRoomException e) {
+		} catch (IllegalActionException | ItemNotFoundException | IllegalMovementException
+				| IllegalCommandException | HinderedRoomException | FullInventoryException e) {
 			UIHandler.printInFrame(e.getMessage() + "\n");
 		}
 	}
 
-	private static void handleCommandAndSubject(Command userCommand, String inputSubject) throws IllegalActionException, ItemNotFoundException, IllegalMovementException, IllegalCommandException, HinderedRoomException {
+	private static void handleCommandAndSubject(Command userCommand, String inputSubject)
+			throws IllegalActionException, ItemNotFoundException, IllegalMovementException,
+			IllegalCommandException, HinderedRoomException, FullInventoryException {
+
 		if(inputSubject == null){
 			switch (userCommand){
 				case BAG: {
-					GameProgress.getBag().print();
+					Inventory.getInventory().print();
 					break;
 				}
 				case OBSERVE: {
@@ -78,24 +82,23 @@ public class Parser {
 					throw new IllegalCommandException();
 				}
 			}
-		}
-		if(Item.isItem(inputSubject)) {
+		} else if(Item.isItem(inputSubject)) {
 			switch(userCommand) {
 				case USE: {
-					GameProgress.getBag().useItem(inputSubject);
+					Inventory.getInventory().useItem(inputSubject);
 					break;
 				}
 				case THROW: {
-					GameProgress.dropItem(GameProgress.getBag().removeFromBag(inputSubject));
+					GameProgress.dropItem(Inventory.getInventory().removeFromBag(inputSubject));
 					break;
 				}
 				case GET: {
 					Item getItem = GameProgress.getCurrentRoom().getItemInArea(inputSubject);
-					GameProgress.getBag().addToBag(getItem);
+					Inventory.getInventory().addToBag(getItem);
 					break;
 				}
 				case OBSERVE: {
-					UIHandler.printInFrame(GameProgress.getBag().getFromBag(inputSubject).getDescription() + "\n");
+					UIHandler.printInFrame(Inventory.getInventory().getFromBag(inputSubject).getDescription() + "\n");
 					break;
 				}
 				default: {

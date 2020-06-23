@@ -25,8 +25,14 @@ public class UIFrame extends JFrame{
     }
 
     private void sendCommandActionPerformed() {
-        Parser.parseCommand(commandTextField.getText());
-        commandTextField.setText("");
+        try {
+            Parser.parseCommand(commandTextField.getText());
+            commandTextField.setText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void UIFrameWindowClosing() {
@@ -46,7 +52,7 @@ public class UIFrame extends JFrame{
             ResourceHandler.loadResources();
             this.initComponentText();
             if (GameProgress.getCurrentRoom() != null) {
-                this.logPane.setText("");
+                UIHandler.cleanScreen();
                 UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations());
             }
         }
@@ -59,7 +65,7 @@ public class UIFrame extends JFrame{
             this.initComponentText();
 
             if (GameProgress.getCurrentRoom() != null) {
-                this.logPane.setText("");
+                UIHandler.cleanScreen();
                 UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations());
             }
         }
@@ -82,7 +88,11 @@ public class UIFrame extends JFrame{
         saveFileChooser.setFileFilter(new FileNameExtensionFilter("Save", "save"));
         int choice = saveFileChooser.showSaveDialog(this);
         if(choice == JFileChooser.APPROVE_OPTION) {
-            SaveStream.saveProgress(saveFileChooser.getSelectedFile());
+            try {
+                SaveStream.saveProgress(saveFileChooser.getSelectedFile());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -117,7 +127,7 @@ public class UIFrame extends JFrame{
                     UIFrameWindowClosing();
                 }
             });
-            var JFrameContentPane = JFrame.getContentPane();
+            Container JFrameContentPane = JFrame.getContentPane();
 
             //======== menuBar ========
             {
@@ -213,16 +223,13 @@ public class UIFrame extends JFrame{
             );
             JFrame.setSize(600, 395);
             JFrame.setLocationRelativeTo(JFrame.getOwner());
-            JFrame.setIconImage(new ImageIcon(System.getProperty("user.dir") + File.separator + "src"
-                    + File.separator +"main" + File.separator
-                    + "resources" + File.separator + "logo.png").getImage());
+            JFrame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("logo.png")).getImage());
         }
 
         //---- buttonGroup1 ----
-        var buttonGroup1 = new ButtonGroup();
+        ButtonGroup buttonGroup1 = new ButtonGroup();
         buttonGroup1.add(radioButtonMenuItem1);
         buttonGroup1.add(radioButtonMenuItem2);
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
 
         if (Locale.getDefault().getLanguage().equals(Locale.ENGLISH.getLanguage())) {
             radioButtonMenuItem1.setSelected(true);
@@ -238,8 +245,14 @@ public class UIFrame extends JFrame{
         loadFileChooser.setFileFilter(new FileNameExtensionFilter("Save", "save"));
         int choice = loadFileChooser.showOpenDialog(this);
         if(choice == JFileChooser.APPROVE_OPTION) {
-            SaveStream.loadProgress(loadFileChooser.getSelectedFile());
-            UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations() + "\n");
+            try {
+                SaveStream.loadProgress(loadFileChooser.getSelectedFile());
+                UIHandler.cleanScreen();
+                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations() + "\n");
+            } catch (IOException | ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
+            }
+
 
             //The player could be loading after a game over.
             sendButton.setEnabled(true);
@@ -275,10 +288,11 @@ public class UIFrame extends JFrame{
                 Thread.sleep(20);
             }
         } catch (InterruptedException e) {
-            //When it's interrupted, we want to stop printing. So, we just return.
+            //When it's interrupted, we want to stop printing. So, we return, without further handling.
+            Thread.currentThread().interrupt();
             return;
         } catch (BadLocationException ignored) {
-
+            //Since we just append our strings, this exception won't occur.
         }
     }
 
@@ -288,7 +302,8 @@ public class UIFrame extends JFrame{
 
     private void initComponentText() {
 
-        ResourceBundle bundle = ResourceBundle.getBundle("bundles.UIbundle");
+        ResourceBundle bundle = ResourceBundle.getBundle("bundles/UIBundle");
+
         // ======== menuBar ========
 
         // ======== menu1 ========
@@ -340,5 +355,9 @@ public class UIFrame extends JFrame{
 
     void disableSave() {
         menuItem3.setEnabled(false);
+    }
+
+    void enableSave() {
+        menuItem3.setEnabled(true);
     }
 }

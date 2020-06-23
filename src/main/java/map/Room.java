@@ -4,17 +4,10 @@
 
 package map;
 
-/*
- * Maps areaItems and adjacentAreas should have a specific behavior for when we need a specific
- * item and a specific action (eg. "USE SWORD"). Maybe I could pass the object as a parameter
- * and use it as a KEY in those maps; another solution is to pass a string (eg the string "USE SWORD")
- * after having done the necessary actions.
- * areaItems could be pair<?,?>, where one of the parameters can be missing.
- */
-
 import engine.GameProgress;
 import engine.MapLoader;
 import engine.GameEvent;
+import gui.UIHandler;
 import obstacles.IllegalItemUsageException;
 import obstacles.HinderedRoomException;
 import util.*;
@@ -27,23 +20,21 @@ import items.*;
 public class Room implements Serializable {
 
 	private static final long serialVersionUID = 2512059451189906531L;
-	private final Integer ID;
+	private Integer ID;
 	transient private static ResourceBundle roomDescriptionBundle = null;
-	private final LightStatus illumination;
-	private final ArrayList<RoomContainer> roomContainers;
-	private ArrayList<Item> roomItems = new ArrayList<Item>();
-	private Map<Direction, RoomTransition> adjacentRooms = new HashMap<Direction, RoomTransition>();
+	private LightStatus illumination;
+	private List<RoomContainer> roomContainers;
+	private List<Item> roomItems = new ArrayList<Item>();
+	private Map<Direction, RoomTransition> adjacentRooms;
 	private String stepOnEvent;
 
 	public String getAreaDescription() {
 		return roomDescriptionBundle.getString(ID.toString());
 	}
 
-
-
 	public Item getItemInArea(String itemName) throws IllegalActionException{
 		for(Item checkedItem : roomItems) {
-			if(checkedItem.equals(itemName)) {
+			if(checkedItem.isSameItem(itemName)) {
 				roomItems.remove(checkedItem);
 				return checkedItem;
 			}
@@ -57,6 +48,8 @@ public class Room implements Serializable {
 
 	public void dropItem(Item droppedItem) {
 		roomItems.add(droppedItem);
+		UIHandler.printInFrame(ResourceBundle.getBundle("bundles/engineOutText").getString("dropItem") +
+				": " + droppedItem.getItemName() + "\n");
 	}
 
 	public boolean isIlluminated() {
@@ -65,17 +58,17 @@ public class Room implements Serializable {
 	}
 
 	public static void setRoomDescriptionBundle(Locale currentLocale) {
-		roomDescriptionBundle = ResourceBundle.getBundle("bundles.RoomDescriptions");
+		roomDescriptionBundle = ResourceBundle.getBundle("bundles.RoomDescriptions", currentLocale);
 	}
 
 	public Room(int newID, LightStatus newIllumination,
-				ArrayList newRoomContainers, ArrayList newRoomItems, Map newadjacentRooms, String event) {		//should be protected
+				ArrayList newRoomContainers, ArrayList newRoomItems, Map newAdjacentRooms, String event) {		//should be protected
 
 		this.ID = newID;
 		this.illumination = newIllumination;
 		this.roomContainers = newRoomContainers;
 		this.roomItems = newRoomItems;
-		this.adjacentRooms = newadjacentRooms;
+		this.adjacentRooms = newAdjacentRooms;
 		this.stepOnEvent = event;
 	}
 
@@ -114,7 +107,7 @@ public class Room implements Serializable {
 			info.append(this.getAreaDescription());
 			info.append(ResourceBundle.getBundle("bundles/engineOutText").getString("directions") + ":");
 			for (Direction direction : adjacentRooms.keySet()) {
-				info.append(" " + direction.toString() + " -");
+				info.append(" " + direction.getName() + " -");
 			}
 			info.append("\n");
 			info.append(ResourceBundle.getBundle("bundles/engineOutText").getString("content") + ":");
@@ -126,7 +119,7 @@ public class Room implements Serializable {
 			if (this.roomContainers.size() > 0) {
 				for (int i = 0; i < roomContainers.size(); i++) {
 					info.append(" " +  roomContainers.get(i).getName()
-							+ "(" + roomContainers.get(i).getState() + ")" + " -");
+							+ "(" + roomContainers.get(i).getState().getName() + ")" + " -");
 				}
 			}
 			return info.toString();
@@ -174,7 +167,13 @@ public class Room implements Serializable {
 		return Objects.hash(ID);
 	}
 
+	/**
+	 * Gets a set of all the room's possible directions, and returns a new HashSet.
+	 * We don't return the room's possible directions because you could delete from that set,
+	 * causing the impossibility to go that direction.
+	 * @return Set of adjacent directions
+	 */
 	public Set getAdjacentDirections() {
-		return adjacentRooms.keySet();
+		return new HashSet(adjacentRooms.keySet());
 	}
 }

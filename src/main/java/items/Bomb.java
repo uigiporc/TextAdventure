@@ -1,6 +1,7 @@
 package items;
 
 import engine.GameProgress;
+import engine.Inventory;
 import gui.UIHandler;
 import map.Room;
 import obstacles.IllegalItemUsageException;
@@ -30,11 +31,11 @@ public class Bomb extends Item {
 			}
 
 		} catch (InterruptedException e) {
-			//This thread should never be interrupted.
+			Thread.currentThread().interrupt();
 		} catch (IllegalItemUsageException e) {
-			//Nothing happens.
+			//Nothing happens: the bomb didn't destroy anything.
 		} finally {
-			GameProgress.getBag().removeFromBag(this.getItemName());
+			Inventory.getInventory().removeFromBag(this.getItemName());
 		}
 	}
 }

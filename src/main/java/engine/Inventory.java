@@ -6,17 +6,22 @@ import items.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class Inventory implements Serializable {
 	private static final Inventory inventory = new Inventory();
-	private ArrayList<Item> bag;
+	private List<Item> bag;
 	private static final short bagMaxItems = 3;
 
-	public void addToBag(Item addedItem) {
-		bag.add(addedItem);
-		UIHandler.printInFrame(addedItem.getItemName() + " "+ ResourceBundle.getBundle("bundles/engineOutText")
-				.getString("itemIntoInventory") + "\n");
+	public void addToBag(Item addedItem) throws FullInventoryException {
+		if (bag.size() < bagMaxItems) {
+			bag.add(addedItem);
+			UIHandler.printInFrame(addedItem.getItemName() + " "+ ResourceBundle.getBundle("bundles/engineOutText")
+					.getString("itemIntoInventory") + "\n");
+		} else {
+			throw new FullInventoryException();
+		}
 	}
 
 	public Item getFromBag(String item) throws ItemNotFoundException {
@@ -63,6 +68,15 @@ public class Inventory implements Serializable {
 
 	private Inventory() {
 		bag = new ArrayList<>();
+	}
+
+	List getBagContent() {
+		return bag;
+	}
+
+	void setBagContent(List<Item> newContent) {
+		bag.clear();
+		bag.addAll(newContent);
 	}
 
 	public static Inventory getInventory() {

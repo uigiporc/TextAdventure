@@ -16,7 +16,7 @@ public class Boulder extends Obstacle{
 
     @Override
     public boolean unlock(Item usedItem) {
-        if(unlockItem.equals(usedItem)) {
+        if(unlockItem.isSameItem(usedItem)) {
             UIHandler.printInFrame(ResourceBundle.getBundle("bundles/ObstaclesOutput")
                     .getString("unlockBoulder"));
             passed = true;

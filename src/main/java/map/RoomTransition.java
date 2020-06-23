@@ -14,7 +14,7 @@ public class RoomTransition implements Serializable{
 	private final Obstacle transitionObstacle;
 
 	public int moveToRoom() throws HinderedRoomException {
-		if(transitionObstacle == null || transitionObstacle.isObstaclePassed()) {
+		if(transitionObstacle == null || transitionObstacle.isPassed()) {
 			return transitioningRoomId;
 		} else {
 			//If there isn't an obstacle, this branch will never activate. So, this branch is activeted only when
@@ -25,7 +25,7 @@ public class RoomTransition implements Serializable{
 	}
 
 	public boolean useItemToUnlock(Item item) {
-		if (transitionObstacle != null && !transitionObstacle.isObstaclePassed()) {
+		if (transitionObstacle != null && !transitionObstacle.isPassed()) {
 			return transitionObstacle.unlock(item);
 		} else {
 			return false;

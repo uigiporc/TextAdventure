@@ -8,32 +8,36 @@ import java.util.*;
 
 public abstract class RoomContainer implements Serializable {
     private static final long serialVersionUID = -5028607639889514468L;
-    protected ArrayList<Item> content;
+    protected List<Item> content;
     protected RoomContainersState state;
     transient protected static ResourceBundle nameBundle = null;
 
-    public void open(ArrayList<Item> items){
-        state = RoomContainersState.OPEN;
-        items.addAll(content);
+    public void open(List<Item> items){
+        if (state != RoomContainersState.OPEN) {
+            state = RoomContainersState.OPEN;
+            items.addAll(content);
+        }
     }
 
-    public void close(ArrayList<Item> items){
-        state = RoomContainersState.CLOSED;
-        for(int i = 0; i < content.size(); i++) {
-            if (!items.contains(content.get(i))){
-                //noinspection SuspiciousListRemoveInLoop
-                content.remove(i);
+    public void close(List<Item> items){
+        if (state != RoomContainersState.CLOSED) {
+            state = RoomContainersState.CLOSED;
+            for(int i = 0; i < content.size(); i++) {
+                if (!items.contains(content.get(i))){
+                    //noinspection SuspiciousListRemoveInLoop
+                    content.remove(i);
+                }
             }
+            items.removeAll(content);
         }
-        items.removeAll(content);
+
     }
     public static RoomContainer getContainer(String inputContainer) {
         ResourceBundle bundle = ResourceBundle.getBundle("bundles/RoomContainersNames");
         try {
             for(String searchingString : bundle.keySet()){
                 if(bundle.getString(searchingString).equalsIgnoreCase(inputContainer)) {
-
-                    Class<?> foundClass = Class.forName(RoomContainer.class.getPackageName()+ "." + searchingString);
+                    Class<?> foundClass = Class.forName(RoomContainer.class.getPackage().getName() + "." + searchingString);
                     return (RoomContainer) foundClass.getConstructor().newInstance();
                 }
             }
@@ -69,7 +73,7 @@ public abstract class RoomContainer implements Serializable {
     }
 
     public static void setNameBundle(Locale currentLocale) {
-        nameBundle = ResourceBundle.getBundle("bundles.RoomContainersNames", currentLocale);
+        nameBundle = ResourceBundle.getBundle("bundles/RoomContainersNames", currentLocale);
     }
 
     public RoomContainersState getState() {

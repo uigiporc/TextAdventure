@@ -5,21 +5,30 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URISyntaxException;
 import java.util.*;
 
+import gui.UIFrame;
 import items.Item;
 import map.Room;
 import map.RoomContainer;
 import util.Command;
 import util.Direction;
 
+import javax.swing.*;
+
 public abstract class ResourceHandler {
 	static {
-		MapLoader.loadMap(new File("src/main/resources/bin/intotheunknown.dat"), 0);
+		try {
+			MapLoader.loadMap(new File(ResourceHandler.class.getClassLoader().getResource("bin/intotheunknown.dat").getPath()), 0);
+		} catch (IOException | ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
+		}
+
 	}
 
 	public static void loadResources() {
-		String resourceFolderPath = "src/main/resources/bin/";
+		String resourceFolderPath = ResourceHandler.class.getClassLoader().getResource("bin/").getPath();
 		try {
 			//Get current JVM locale to initialize resources
 			Locale currentLocale;
@@ -38,37 +47,27 @@ public abstract class ResourceHandler {
 
 			RoomContainer.setNameBundle(currentLocale);
 			GameEvent.setEventText(currentLocale);
-		}catch(FileNotFoundException |MissingResourceException ex) {
-			System.out.println("lol");
+		}catch(MissingResourceException | IOException ex) {
+			JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
 		}
-		//GameProgress.clock.start();
 	}
 
-	public static <T> Map<String[], T> load(String filePath) throws FileNotFoundException{
+	public static <T> Map<String[], T> load(String filePath) throws IOException{
 		ObjectInputStream aliasesStream = null;
 		File aliasFile = null;
-		Map <String[], T>loadingMap = new HashMap();
+		Map <String[], T>loadingMap = null;
 
 		try {
 			aliasFile = new File(filePath);
 			aliasesStream = new ObjectInputStream(new FileInputStream(aliasFile));
-			loadingMap = (HashMap<String[], T>) aliasesStream.readObject();
+			loadingMap = (Map<String[], T>) aliasesStream.readObject();
 			return loadingMap;
 
-		} catch (FileNotFoundException e) {
-			System.out.println("lol");
-			throw new FileNotFoundException();
-		} catch (IOException e) {
-			System.out.println("lol");
-			//FATAL
 		} catch (ClassNotFoundException e) {
-			System.out.println("lol");
 			//We are absolutely sure that the class IS actually found.
 		} finally {
-			try {
-				Objects.requireNonNull(aliasesStream).close();
-			} catch (Exception e) {
-
+			if (aliasesStream != null) {
+				aliasesStream.close();
 			}
 		}
 		return loadingMap;

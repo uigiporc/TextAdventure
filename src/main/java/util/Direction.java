@@ -1,8 +1,11 @@
 package util;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
+
 import engine.ResourceHandler;
 
 public enum Direction {
@@ -14,6 +17,10 @@ public enum Direction {
 	DOWN;
 
 	private static Map<String[], Direction> directionAliases;
+
+	public String getName() {
+		return ResourceBundle.getBundle("bundles/DirectionsBundle").getString(this.toString());
+	}
 
 	public static boolean isDirection(String checkDirection) {
 		try {
@@ -49,7 +56,7 @@ public enum Direction {
 		}
 	}
 
-	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
+	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws IOException {
 		String directionAliasesFilePath = resourceFolderPath + "DirectionAliases_" + currentLocale.getLanguage() + ".dat";
 		directionAliases = ResourceHandler.<Direction>load(directionAliasesFilePath);
 	}

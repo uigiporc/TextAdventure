@@ -1,6 +1,7 @@
 package util;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public enum Command {
 		return null;
 	}
 
-	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws FileNotFoundException{
+	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws IOException {
 		String commandAliasesFilePath = resourceFolderPath + "CommandAliases_" + currentLocale.getLanguage() + ".dat";
 		commandAliases = ResourceHandler.load(commandAliasesFilePath);
 	}

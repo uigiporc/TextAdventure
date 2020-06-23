@@ -23,28 +23,12 @@ public abstract class Item extends Thread implements Serializable {
 
 	public abstract void use();
 
-	public boolean equals(Item comparedItem) {
+	public boolean isSameItem(Item comparedItem) {
 		return this.getClass().equals(comparedItem.getClass());
 	}
 
-	public boolean equals(String comparedString) {
+	public boolean isSameItem(String comparedString) {
 		return this.getItemName().equalsIgnoreCase(comparedString);
-	}
-
-	public static Item getItem(String inputItem) {
-		try {
-			for(String searchingString : nameBundle.keySet()){
-				if(nameBundle.getString(searchingString).equalsIgnoreCase(inputItem)) {
-					Class<?> foundClass = Class.forName(Item.class.getPackageName()+ "." + searchingString);
-					return (Item) foundClass.getConstructor().newInstance();
-				}
-			}
-			return null;		//Item not found.
-		}
-		catch(Exception ex) {
-			//Item not found.
-			return null;
-		}
 	}
 
 	public static boolean isItem(String inputItem) {

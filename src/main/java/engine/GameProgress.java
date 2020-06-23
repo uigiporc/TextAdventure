@@ -8,6 +8,8 @@ import obstacles.HinderedRoomException;
 import util.Direction;
 import util.LightStatus;
 
+import java.util.ResourceBundle;
+
 /**
  * GameProgress is a class containing the current game progress.
  */
@@ -15,7 +17,6 @@ public class GameProgress {
 
 	private static Room currentRoom;
 	private static LightStatus playerLight = null;
-	private static Inventory bag;
 
 	public static Room getCurrentRoom() {
 		return currentRoom;
@@ -35,6 +36,7 @@ public class GameProgress {
 
 	public static void moveRoom(Direction direction) throws IllegalMovementException, HinderedRoomException {
 		currentRoom = currentRoom.move(direction);
+		UIHandler.cleanScreen();
 		currentRoom.startEvent();
 		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
 	}
@@ -51,15 +53,6 @@ public class GameProgress {
 		UIHandler.cleanScreen();
 		currentRoom = MapLoader.getRoom(0);
 		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
-		bag = Inventory.getInventory();
-	}
-
-	public static Inventory getBag() {
-		return bag;
-	}
-
-	static void setBag(Inventory newBag) {
-		bag = newBag;
 	}
 
 	public static void unlockObstacle(Item item) throws IllegalItemUsageException {

@@ -2,7 +2,6 @@ package exam;
 
 
 import engine.GameProgress;
-import gui.UIHandler;
 
 public class Main {
 

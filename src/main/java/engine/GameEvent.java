@@ -30,8 +30,11 @@ public class GameEvent extends Thread {
            try {
                document.remove(document.getLength()-1, 1);
                sleep(5);
-           } catch (BadLocationException | InterruptedException e) {
-               e.printStackTrace();
+           } catch (BadLocationException e){
+               //Can occur only if we try to remove from an empty document:
+               //so we go ahead, since that's the situation we're trying to achieve.
+           } catch (InterruptedException e) {
+               Thread.currentThread().interrupt();
            }
        }
        UIHandler.printInFrame(eventOutputText.getString("credits"));
@@ -44,6 +47,7 @@ public class GameEvent extends Thread {
     });
 
     private static final Thread dragonWakeUp = new Thread (() -> {
+        UIHandler.disableSave();
         UIHandler.printInFrame(eventOutputText.getString("dragonStart"));
         synchronized (swordLock) {
             try {
@@ -52,11 +56,10 @@ public class GameEvent extends Thread {
                         sleep(12_000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                    } finally {
-                        synchronized (swordLock) {
-                            swordLock.notify();
-                            return;
-                        }
+                    }
+                    synchronized (swordLock) {
+                        swordLock.notify();
+                        return;
                     }
                 });
 
@@ -68,29 +71,31 @@ public class GameEvent extends Thread {
                     GameProgress.gameOver();
                 } else {
                     UIHandler.printInFrame(eventOutputText.getString("dragonPassed"));
+                    UIHandler.enableSave();
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
+
     });
 
     private static final Thread bossEvent = new Thread (() -> {
+        UIHandler.disableSave();
        synchronized (waterLock) {
            UIHandler.printInFrame(eventOutputText.getString("bossStart"));
            try {
                Thread countdown = new Thread(() -> {
-                       try {
-                           sleep(15_000);
-                       } catch (InterruptedException e) {
-                           Thread.currentThread().interrupt();
-                       } finally {
-                           synchronized (waterLock) {
-                               waterLock.notify();
-                               return;
-                           }
-                       }
-                   });
+                   try {
+                       sleep(15_000);
+                   } catch (InterruptedException e) {
+                       Thread.currentThread().interrupt();
+                   }
+                   synchronized (waterLock) {
+                       waterLock.notify();
+                       return;
+                   }
+               });
 
                countdown.start();
                waterLock.wait();
@@ -100,11 +105,13 @@ public class GameEvent extends Thread {
                } else {
                    UIHandler.printInFrame(eventOutputText.getString("bossGoodEnd"));
                }
+               sleep(10000);
                new Thread(credits).start();
            } catch (InterruptedException e) {
                Thread.currentThread().interrupt();
            }
        }
+       UIHandler.enableSave();
     });
 
     private static final Thread oldManEvent = new Thread(() -> {
@@ -118,10 +125,11 @@ public class GameEvent extends Thread {
     });
 
     private static final Thread doorEvent = new Thread(() -> {
+        UIHandler.disableSave();
         try {
             Thread.sleep(15000);
         } catch (InterruptedException e) {
-            //should never happen
+            Thread.currentThread().interrupt();
         } finally {
             if (GameProgress.getCurrentRoom().roomInformations().length() + 1 < (UIHandler.getDocument().getLength())) {
                 UIHandler.printInFrame(eventOutputText.getString("doorEventGameOver"));
@@ -129,17 +137,19 @@ public class GameEvent extends Thread {
             } else {
                 UIHandler.printInFrame(eventOutputText.getString("doorEventPassed"));
                 GameProgress.dropItem(new SupremeKey());
+                UIHandler.enableSave();
             }
         }
     });
 
     private static final Thread madScientist = new Thread(() -> {
+        UIHandler.disableSave();
         Room tempRoom = GameProgress.getCurrentRoom();
         UIHandler.printInFrame(eventOutputText.getString("madScientist"));
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
-            //Never gets interrupted.
+            Thread.currentThread().interrupt();
         } finally {
             try {
                 if (tempRoom.equals(GameProgress.getCurrentRoom())
@@ -148,6 +158,7 @@ public class GameEvent extends Thread {
                     GameProgress.gameOver();
                 } else {
                     UIHandler.printInFrame(eventOutputText.getString("madScientistGone"));
+                    UIHandler.enableSave();
                 }
             } catch (IllegalMovementException e) {
                 e.printStackTrace();
@@ -160,6 +171,7 @@ public class GameEvent extends Thread {
     private static final Thread bunnyHunt = new Thread(new Runnable() {
         @Override
         public void run() {
+            UIHandler.disableSave();
             boolean caughtBunny = false;
             Room bunnyRoom = null;
             Room bunnyRanAway = GameProgress.getCurrentRoom();
@@ -180,7 +192,7 @@ public class GameEvent extends Thread {
                         Direction tempDirection = getPlayerDirection(GameProgress.getCurrentRoom(), bunnyRoom);
 
                         if (tempDirection != null) {
-                            Set<Direction> bunnyDirections = new HashSet<>(bunnyRoom.getAdjacentDirections());
+                            Set<Direction> bunnyDirections = bunnyRoom.getAdjacentDirections();
                             bunnyDirections.remove(tempDirection);
                             try {
                                 bunnyRoom = bunnyRoom.move(Direction.getOppositeDirection(tempDirection));
@@ -211,9 +223,10 @@ public class GameEvent extends Thread {
                         }
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
+            UIHandler.enableSave();
         }
 
         private Direction getPlayerDirection(Room playerRoom, Room bunnyRoom) {
@@ -275,7 +288,7 @@ public class GameEvent extends Thread {
                 return false;
             }
             case "useWater": {
-                new Thread(useWater);
+                new Thread(useWater).start();
                 return false;
             }
             case "dragonWakeUp": {
