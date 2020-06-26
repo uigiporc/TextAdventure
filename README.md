@@ -10,16 +10,20 @@ Il progetto in esame è un'[avventura testuale](https://it.wikipedia.org/wiki/Av
 -  Le stringhe di output vengono salvate in molteplici file: grazie all'utilizzo della classe `ResourceBundle` riusciamo ad ottenere una localizzazione completa dell'intero software grazie all'individuazione a Runtime della lingua della JVM sulla quale il software viene eseguito. Il programma è localizzato in due lingue: *italiano* e *inglese*.
 
 - La logica dell'ambiente circostante è contenuta nella classe `Room`. 
-  - Gli oggetti della suddetta classe sono connessi tra di loro attraverso un oggetto `AdjacentRoom`, il quale si occupa di valutare la presenza di ostacoli sul cammino verso una determinata direzione attraverso un riferimento all'ID dell'oggetto `Room` che vogliamo ottenere ed un eventuale oggetto `Obstacle`.
+  - Gli oggetti della suddetta classe sono connessi tra di loro attraverso un oggetto `RoomTransition`, il quale si occupa di valutare la presenza di ostacoli sul cammino verso una determinata direzione attraverso un riferimento all'ID dell'oggetto `Room` che vogliamo ottenere ed un eventuale oggetto `Obstacle`.
+  - Ogni oggetto `Room` contiene una stringa che identifica l'evento che si vuole eseguire quando quell'oggetto `Room` viene letto per la prima volta (dal punto di vista del giocatore, *la prima volta che si entra in quella stanza*).
 
-- Lo stato corrente di gioco è mantenuto nella classe statica `GameProgress`, il quale mantiene un riferimento all'oggetto della classe `Room` nella quale si trova il giocatore. 
+- Lo stato corrente di gioco è mantenuto nella classe statica `GameProgress`, il quale mantiene un riferimento all'oggetto della classe `Room` nella quale si trova il giocatore e l'illuminazione indipendete dalla stanza (come l'accensione di una fiaccola). 
 
-- Per il riconoscimento dei comandi, ci serviamo della classe `Parser`, la quale interpreta la stringa in ingresso utilizzando un'espressione regolare. In base all'input, riconosce il tipo di azione che si vuole svolgere e il soggetto, andando a chiamare i metodi coerenti con l'espressione.
-- È possibile conservare in un file i progressi di gioco (come contenuto dell'inventario, posizione corrente, progressi nella mappa) attraverso il `MenuItem` con etichetta *salva*, per poter riprendere il gioco in un secondo momento, aprendo lo stesso file attraverso il `MenuItem` con etichetta *Carica*.
+- Per il riconoscimento dei comandi, ci serviamo della classe `Parser`, la quale interpreta la stringa in ingresso utilizzando un'espressione regolare. In base all'input, riconosce il tipo di azione che si vuole svolgere e il soggetto, andando a chiamare i metodi coerenti con l'espressione. L'input non è case sensitive.
+
+- È possibile conservare in un file i progressi di gioco (contenuto dell'inventario, posizione corrente, progressi nella mappa) attraverso il `MenuItem` con etichetta *salva*, per poter riprendere il gioco in un secondo momento, aprendo lo stesso file attraverso il `MenuItem` con etichetta *Carica*.
 
 - La mappa di gioco (ovvero l'insieme degli oggetti `Room`) viene letta da file, rendendo ulteriormente indipendente il software dalla storia sviluppata.
 
-- Le classi `Inventory` e `UIFrame` sono state scelte ed implementate come classi Singleton, proprio perché, ad ogni esecuzione, avremo un solo frame principale ed un solo inventario. 
+- Le classi `Inventory` e `UIFrame` sono state scelte ed implementate come classi Singleton, proprio perché, ad ogni esecuzione, avremo un solo frame principale ed un solo inventario.
+
+- Gli strumenti di gioco sono stati implementati come classi che ereditano dalla classe astratta `Item`, dalla quale ereditano il metodo astratto `use`: andiamo così ad implementare metodi diversi per ogni strumento (questo metodo rappresenta l'effetto sul gioco dell'utilizzo di tale strumento). Le sottoclassi della classe `Item` ereditano dalla superclasse anche metodi per il ritrovamento del nome dello strumento e la sua descrizione (da qui la decisione di non avere un'interfaccia ma una classe astratta).
 ## Alcuni dettagli implementativi
 
 - Il testo viene inserito all'interno di un `JEditorPane` simulando il "Typewriter Effect", ovvero la stampa di caratteri in modo animato: ciò è possibile creando un nuovo `Thread` per ogni stringa che vogliamo stampare, inserendo nel `JEditorPane` un carattere per volta, e chiamando il metodo `sleep()` su questo Thread dopo la stampa di ogni carattere.
