@@ -1,7 +1,7 @@
 package obstacles;
 
 import gui.UIHandler;
-import items.*;
+import items.Item;
 
 import java.util.ResourceBundle;
 

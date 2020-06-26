@@ -1,12 +1,11 @@
 package util;
 
-import java.io.FileNotFoundException;
+import engine.ResourceHandler;
+
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import engine.ResourceHandler;
 
 public enum Direction {
 	NORTH,

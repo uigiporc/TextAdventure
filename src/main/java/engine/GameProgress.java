@@ -2,13 +2,12 @@ package engine;
 
 import gui.UIHandler;
 import items.Item;
-import map.*;
-import obstacles.IllegalItemUsageException;
+import map.IllegalMovementException;
+import map.Room;
 import obstacles.HinderedRoomException;
+import obstacles.IllegalItemUsageException;
 import util.Direction;
 import util.LightStatus;
-
-import java.util.ResourceBundle;
 
 /**
  * GameProgress is a class containing the current game progress.
@@ -38,7 +37,7 @@ public class GameProgress {
 		currentRoom = currentRoom.move(direction);
 		UIHandler.cleanScreen();
 		currentRoom.startEvent();
-		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
+		UIHandler.printInFrame(currentRoom.roomInformation() + "\n");
 	}
 
 	public static void setCurrentRoom(Room currentRoom) {
@@ -52,7 +51,7 @@ public class GameProgress {
 	public static void newGame(){
 		UIHandler.cleanScreen();
 		currentRoom = MapLoader.getRoom(0);
-		UIHandler.printInFrame(currentRoom.roomInformations() + "\n");
+		UIHandler.printInFrame(currentRoom.roomInformation() + "\n");
 	}
 
 	public static void unlockObstacle(Item item) throws IllegalItemUsageException {

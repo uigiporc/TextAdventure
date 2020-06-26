@@ -1,16 +1,17 @@
 package gui;
 
-import engine.GameProgress;
-import engine.Parser;
-import engine.ResourceHandler;
-import engine.SaveStream;
+import engine.*;
+import items.Item;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -43,7 +44,6 @@ public class UIFrame extends JFrame{
         if (selectedOption == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
-        //
     }
 
     private void radioButtonMenuItem2ItemStateChanged(ItemEvent e) {
@@ -53,7 +53,7 @@ public class UIFrame extends JFrame{
             this.initComponentText();
             if (GameProgress.getCurrentRoom() != null) {
                 UIHandler.cleanScreen();
-                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations());
+                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformation());
             }
         }
     }
@@ -66,7 +66,7 @@ public class UIFrame extends JFrame{
 
             if (GameProgress.getCurrentRoom() != null) {
                 UIHandler.cleanScreen();
-                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations());
+                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformation());
             }
         }
     }
@@ -247,17 +247,19 @@ public class UIFrame extends JFrame{
         if(choice == JFileChooser.APPROVE_OPTION) {
             try {
                 SaveStream.loadProgress(loadFileChooser.getSelectedFile());
+                Item.interruptUsages();
+                GameEvent.interruptEvents();
+
+                //The player could be loading after a game over.
+                sendButton.setEnabled(true);
+                commandTextField.setEnabled(true);
+                menuItem3.setEnabled(true);
+
                 UIHandler.cleanScreen();
-                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations() + "\n");
+                UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformation() + "\n");
             } catch (IOException | ClassNotFoundException e) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("bundles/UIbundle").getString("errorMessage"), "", JOptionPane.ERROR_MESSAGE);
             }
-
-
-            //The player could be loading after a game over.
-            sendButton.setEnabled(true);
-            commandTextField.setEnabled(true);
-            menuItem3.setEnabled(true);
         }
     }
 

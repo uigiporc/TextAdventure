@@ -13,7 +13,7 @@ public class Bomb extends Item {
 	private static final long serialVersionUID = 892007324576614627L;
 
 	public void use() {
-		Thread bombExplosion = new Thread(this);
+		Thread bombExplosion = new Thread(super.itemUsedThreads,this);
 		bombExplosion.start();
 	}
 
@@ -22,6 +22,7 @@ public class Bomb extends Item {
 		try {
 			UIHandler.printInFrame(ResourceBundle.getBundle("bundles/itemsUsage").getString("bomb"));
 			Room roomWithBomb = GameProgress.getCurrentRoom();
+			Inventory.getInventory().removeFromBag(this.getItemName());
 			Thread.sleep(8000);
 			UIHandler.printInFrame("BOOM\n");
 			if (roomWithBomb.equals(GameProgress.getCurrentRoom())) {
@@ -34,8 +35,6 @@ public class Bomb extends Item {
 			Thread.currentThread().interrupt();
 		} catch (IllegalItemUsageException e) {
 			//Nothing happens: the bomb didn't destroy anything.
-		} finally {
-			Inventory.getInventory().removeFromBag(this.getItemName());
 		}
 	}
 }

@@ -1,15 +1,13 @@
 package items;
 
 import java.io.Serializable;
-import java.lang.Thread;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import items.*;
 
 public abstract class Item extends Thread implements Serializable {
 
 	private static final long serialVersionUID = -8481482740902320036L;
+	protected static ThreadGroup itemUsedThreads = new ThreadGroup("items");
 	transient protected static ResourceBundle nameBundle = null;
 	transient protected static ResourceBundle descriptionBundle = null;
 
@@ -52,5 +50,9 @@ public abstract class Item extends Thread implements Serializable {
 
 	public static void setDescriptionBundle(Locale currentLocale) {
 		descriptionBundle = ResourceBundle.getBundle("bundles.ItemDescriptions", currentLocale);
+	}
+
+	public static void interruptUsages() {
+		itemUsedThreads.interrupt();
 	}
 }

@@ -1,14 +1,5 @@
 package engine;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.URISyntaxException;
-import java.util.*;
-
-import gui.UIFrame;
 import items.Item;
 import map.Room;
 import map.RoomContainer;
@@ -16,6 +7,14 @@ import util.Command;
 import util.Direction;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public abstract class ResourceHandler {
 	static {

@@ -4,7 +4,9 @@ import items.Item;
 import util.RoomContainersState;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public abstract class RoomContainer implements Serializable {
     private static final long serialVersionUID = -5028607639889514468L;

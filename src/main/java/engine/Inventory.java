@@ -1,7 +1,8 @@
 package engine;
 
 import gui.UIHandler;
-import items.*;
+import items.Item;
+import items.ItemNotFoundException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

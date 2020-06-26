@@ -3,7 +3,6 @@ package map;
 import items.Item;
 import util.RoomContainersState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Chest extends RoomContainer {

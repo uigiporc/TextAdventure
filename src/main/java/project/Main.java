@@ -1,4 +1,4 @@
-package exam;
+package project;
 
 
 import engine.GameProgress;

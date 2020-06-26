@@ -1,11 +1,10 @@
 package util;
 
-import java.io.FileNotFoundException;
+import engine.ResourceHandler;
+
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
-
-import engine.ResourceHandler;
 
 public enum Command {
     GET,

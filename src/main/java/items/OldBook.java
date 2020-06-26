@@ -1,6 +1,5 @@
 package items;
 
-import engine.GameProgress;
 import engine.Inventory;
 import gui.UIHandler;
 

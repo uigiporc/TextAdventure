@@ -1,10 +1,11 @@
 package map;
 
+import items.Item;
+import obstacles.HinderedRoomException;
+import obstacles.Obstacle;
+
 import java.io.Serializable;
 import java.util.ResourceBundle;
-import items.Item;
-import obstacles.Obstacle;
-import obstacles.HinderedRoomException;
 
 public class RoomTransition implements Serializable{
 

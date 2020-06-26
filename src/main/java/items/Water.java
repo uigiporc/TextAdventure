@@ -1,7 +1,6 @@
 package items;
 
 import engine.GameEvent;
-import engine.GameProgress;
 import engine.Inventory;
 
 public class Water extends Item {

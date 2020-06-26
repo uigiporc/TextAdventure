@@ -1,7 +1,5 @@
 package engine;
 
-import java.util.regex.Pattern;
-
 import gui.UIHandler;
 import items.Item;
 import items.ItemNotFoundException;
@@ -13,6 +11,7 @@ import util.Direction;
 import util.IllegalActionException;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //group(0) = tutta la stringa; group(1) = azione; group(4) = oggetto/direzione
 public class Parser {
@@ -75,7 +74,7 @@ public class Parser {
 					break;
 				}
 				case OBSERVE: {
-					UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformations() + "\n");
+					UIHandler.printInFrame(GameProgress.getCurrentRoom().roomInformation() + "\n");
 					break;
 				}
 				default: {
@@ -89,12 +88,19 @@ public class Parser {
 					break;
 				}
 				case THROW: {
-					GameProgress.dropItem(Inventory.getInventory().removeFromBag(inputSubject));
+					GameProgress.dropItem(Inventory.getInventory().getFromBag(inputSubject));
+					Inventory.getInventory().removeFromBag(inputSubject);
 					break;
 				}
 				case GET: {
 					Item getItem = GameProgress.getCurrentRoom().getItemInArea(inputSubject);
-					Inventory.getInventory().addToBag(getItem);
+					try {
+						Inventory.getInventory().addToBag(getItem);
+					} catch(FullInventoryException e) {
+						GameProgress.getCurrentRoom().dropItem(getItem);
+						throw new FullInventoryException();
+					}
+
 					break;
 				}
 				case OBSERVE: {

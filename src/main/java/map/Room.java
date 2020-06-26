@@ -4,18 +4,19 @@
 
 package map;
 
+import engine.GameEvent;
 import engine.GameProgress;
 import engine.MapLoader;
-import engine.GameEvent;
 import gui.UIHandler;
-import obstacles.IllegalItemUsageException;
+import items.Item;
 import obstacles.HinderedRoomException;
-import util.*;
+import obstacles.IllegalItemUsageException;
+import util.Direction;
+import util.IllegalActionException;
+import util.LightStatus;
 
 import java.io.Serializable;
 import java.util.*;
-
-import items.*;
 
 public class Room implements Serializable {
 
@@ -62,7 +63,8 @@ public class Room implements Serializable {
 	}
 
 	public Room(int newID, LightStatus newIllumination,
-				ArrayList newRoomContainers, ArrayList newRoomItems, Map newAdjacentRooms, String event) {		//should be protected
+				List<RoomContainer> newRoomContainers, List<Item> newRoomItems,
+				Map<Direction, RoomTransition> newAdjacentRooms, String event) {		//should be protected
 
 		this.ID = newID;
 		this.illumination = newIllumination;
@@ -99,7 +101,7 @@ public class Room implements Serializable {
 		}
 	}
 
-	public String roomInformations() {
+	public String roomInformation() {
 		if (!this.isIlluminated() && !GameProgress.isPlayerIlluminated()) {
 			return ResourceBundle.getBundle("bundles/engineOutText").getString("noLight");
 		} else {
