@@ -23,33 +23,21 @@ public class GameEvent extends Thread {
     private static final Object swordLock = new Object();
     private static final Object waterLock = new Object();
     private static final ThreadGroup eventThreadGroup = new ThreadGroup("events");
-
-    private static final Thread countdown = new Thread(() -> {
-        try {
-            sleep(12_000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        synchronized (swordLock) {
-            swordLock.notify();
-            return;
-        }
-    });
     
     private static final Thread credits = new Thread(() -> {
        UIHandler.disableInput();
        Document document = UIHandler.getDocument();
-       while (document.getLength() > 0) {
-           try {
+       try {
+           while (document.getLength() > 0) {
                document.remove(document.getLength()-1, 1);
                sleep(5);
-               UIHandler.printInFrame(eventOutputText.getString("credits"));
-           } catch (BadLocationException e){
-               //Can occur only if we try to remove from an empty document:
-               //so we go ahead, since that's the situation we're trying to achieve.
-           } catch (InterruptedException e) {
-               Thread.currentThread().interrupt();
            }
+           UIHandler.printInFrame(eventOutputText.getString("credits"));
+       } catch (BadLocationException e){
+           //Can occur only if we try to remove from an empty document:
+           // so we go ahead, since that's the situation we're trying to achieve.
+       } catch (InterruptedException e) {
+           Thread.currentThread().interrupt();
        }
     });
 
@@ -64,11 +52,21 @@ public class GameEvent extends Thread {
         UIHandler.printInFrame(eventOutputText.getString("dragonStart"));
         synchronized (swordLock) {
             try {
-                Thread count = new Thread(eventThreadGroup, countdown);
-                count.start();
+                Thread countdown = new Thread(() -> {
+                    try {
+                        sleep(12_000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    synchronized (swordLock) {
+                        swordLock.notify();
+                        return;
+                    }
+                });
+                countdown.start();
                 swordLock.wait();
                 Thread.sleep(500);
-                if (!count.isAlive()) {
+                if (!countdown.isAlive()) {
                     UIHandler.printInFrame(eventOutputText.getString("dragonGameOver"));
                     GameProgress.gameOver();
                 } else {
@@ -87,17 +85,27 @@ public class GameEvent extends Thread {
        synchronized (waterLock) {
            UIHandler.printInFrame(eventOutputText.getString("bossStart"));
            try {
-               Thread count = new Thread(eventThreadGroup, countdown);
+               Thread countdown = new Thread(() -> {
+                   try {
+                       sleep(15_000);
+                   } catch (InterruptedException e) {
+                       Thread.currentThread().interrupt();
+                   }
+                   synchronized (waterLock) {
+                       waterLock.notify();
+                       return;
+                   }
+               });
 
-               count.start();
+               countdown.start();
                waterLock.wait();
                Thread.sleep(500);
-               if (!count.isAlive()) {
+               if (!countdown.isAlive()) {
                    UIHandler.printInFrame(eventOutputText.getString("bossBadEnd"));
                } else {
                    UIHandler.printInFrame(eventOutputText.getString("bossGoodEnd"));
                }
-               sleep(10000);
+               sleep(15_000);
                new Thread(credits).start();
            } catch (InterruptedException e) {
                Thread.currentThread().interrupt();
