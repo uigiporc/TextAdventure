@@ -13,7 +13,7 @@ public class Bomb extends Item {
 	private static final long serialVersionUID = 892007324576614627L;
 
 	public void use() {
-		Thread bombExplosion = new Thread(super.itemUsedThreads,this);
+		Thread bombExplosion = new Thread(itemUsedThreads,this);
 		bombExplosion.start();
 	}
 

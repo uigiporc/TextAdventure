@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 
 public class Inventory implements Serializable {
 	private static final Inventory inventory = new Inventory();
-	private List<Item> bag;
+	private final List<Item> bag;
 	private static final short bagMaxItems = 3;
 
 	public void addToBag(Item addedItem) throws FullInventoryException {

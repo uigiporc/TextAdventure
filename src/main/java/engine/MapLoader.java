@@ -28,8 +28,7 @@ public class MapLoader {
 
 
 	public static Room getRoom(int ID) {
-		Room nextRoom = gameMap.get(ID);
-		return nextRoom;
+		return gameMap.get(ID);
 	}
 
 	static List<Room> getMap() {

@@ -21,12 +21,12 @@ import java.util.*;
 public class Room implements Serializable {
 
 	private static final long serialVersionUID = 2512059451189906531L;
-	private Integer ID;
+	private final Integer ID;
 	transient private static ResourceBundle roomDescriptionBundle = null;
-	private LightStatus illumination;
-	private List<RoomContainer> roomContainers;
+	private final LightStatus illumination;
+	private final List<RoomContainer> roomContainers;
 	private List<Item> roomItems = new ArrayList<Item>();
-	private Map<Direction, RoomTransition> adjacentRooms;
+	private final Map<Direction, RoomTransition> adjacentRooms;
 	private String stepOnEvent;
 
 	public String getAreaDescription() {

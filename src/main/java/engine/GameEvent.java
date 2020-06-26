@@ -1,6 +1,5 @@
 package engine;
 
-import gui.UIFrame;
 import gui.UIHandler;
 import items.SupremeKey;
 import items.Sword;
@@ -268,7 +267,7 @@ public class GameEvent extends Thread {
             }
             case "bunnyRunAway": {
                 new Thread(eventThreadGroup, bunnyRunAway).start();
-                return !bunnyHunt.isAlive();
+                return false;
             }
             case "oldManEvent" : {
                 new Thread(eventThreadGroup,oldManEvent).start();

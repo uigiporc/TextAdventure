@@ -25,7 +25,7 @@ public enum Direction {
 		try {
 			for(String[] searchingStringArray : directionAliases.keySet()){
 				for(String searchingString : searchingStringArray) {
-					if(((String) searchingString).equalsIgnoreCase(checkDirection)) {
+					if(searchingString.equalsIgnoreCase(checkDirection)) {
 						return true;
 					}
 				}
@@ -42,7 +42,7 @@ public enum Direction {
 		try {
 			for(String[] searchingStringArray : directionAliases.keySet()){
 				for(String searchingString : searchingStringArray) {
-					if(((String) searchingString).equalsIgnoreCase(checkDirection)) {
+					if(searchingString.equalsIgnoreCase(checkDirection)) {
 						return directionAliases.get(searchingStringArray);
 					}
 				}
@@ -57,7 +57,7 @@ public enum Direction {
 
 	public static void initAliases(String resourceFolderPath, Locale currentLocale) throws IOException {
 		String directionAliasesFilePath = resourceFolderPath + "DirectionAliases_" + currentLocale.getLanguage() + ".dat";
-		directionAliases = ResourceHandler.<Direction>load(directionAliasesFilePath);
+		directionAliases = ResourceHandler.load(directionAliasesFilePath);
 	}
 
 	public static Direction getOppositeDirection(Direction direction) {

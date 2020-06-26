@@ -7,10 +7,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class UIHandler {
-    private static Lock printLock = new ReentrantLock();
-    private static UIFrame gameFrame = UIFrame.getUIFrame();
-    private static LinkedBlockingQueue<Thread> stringQueue = new LinkedBlockingQueue();
-    private static Thread printHandler = new Thread(() -> {
+    private static final Lock printLock = new ReentrantLock();
+    private static final UIFrame gameFrame = UIFrame.getUIFrame();
+    private static final LinkedBlockingQueue<Thread> stringQueue = new LinkedBlockingQueue();
+    private static final Thread printHandler = new Thread(() -> {
         synchronized (stringQueue) {
             while ((stringQueue.peek() != null) && stringQueue.peek().isAlive()){
                 try {

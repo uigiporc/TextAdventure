@@ -6,14 +6,13 @@ import gui.UIHandler;
 import util.LightStatus;
 
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class Torch extends Item{
 
 	private static final long serialVersionUID = -317659910826339075L;
 
 	public void use() {
-		Thread torchTurnOn = new Thread(super.itemUsedThreads, this);
+		Thread torchTurnOn = new Thread(itemUsedThreads, this);
 		torchTurnOn.start();
 	}
 
