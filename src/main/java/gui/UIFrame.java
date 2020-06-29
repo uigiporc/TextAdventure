@@ -223,7 +223,7 @@ public class UIFrame extends JFrame{
             );
             JFrame.setSize(600, 395);
             JFrame.setLocationRelativeTo(JFrame.getOwner());
-            JFrame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("logo.png")).getImage());
+            JFrame.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("logo.png").getPath()).getImage());
         }
 
         //---- buttonGroup1 ----
@@ -304,7 +304,7 @@ public class UIFrame extends JFrame{
 
     private void initComponentText() {
 
-        ResourceBundle bundle = ResourceBundle.getBundle("bundles/UIBundle");
+        ResourceBundle bundle = ResourceBundle.getBundle("bundles.UIBundle");
 
         // ======== menuBar ========
 
